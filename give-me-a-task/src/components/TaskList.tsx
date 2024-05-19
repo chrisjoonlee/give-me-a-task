@@ -1,21 +1,13 @@
-import { useContext, useEffect, useState } from "react";
-import { ListTasksData, Task, isTask } from "../types";
+import { useContext, useEffect } from "react";
+import { ListTasksData } from "../types";
 
 import { listTasks } from '../graphql/queries.ts';
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { UserContext } from "../context/UserContext.tsx";
 
-import * as subscriptions from '../graphql/subscriptions';
 import { TaskContext } from "../context/TaskContext.tsx";
 
 const client = generateClient();
-
-// const createSub = client
-//   .graphql({ query: subscriptions.onCreateTask })
-//   .subscribe({
-//     next: ({ data }) => console.log("createSub:", data),
-//     error: (error) => console.warn"createSub error:", error)
-//   });
 
 const TaskList = () => {
     const { userId } = useContext(UserContext);

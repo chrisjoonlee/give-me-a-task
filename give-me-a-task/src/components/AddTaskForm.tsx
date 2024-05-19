@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { CreateTaskData, CreateTaskInput, Task } from "../types";
+import { useContext } from "react";
+import { CreateTaskData } from "../types";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { createTask } from "../graphql/mutations";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -17,9 +17,6 @@ const AddTaskForm = () => {
     const { userId } = useContext(UserContext);
     const { tasks, setTasks } = useContext(TaskContext);
 
-    // const initialFormState: CreateTaskInput = { name: '', description: '', userId: "" };
-    // const [formState, setFormState] = useState<CreateTaskInput>(initialFormState);
-
     const { register, handleSubmit, reset } = useForm({
         defaultValues: {
             name: "",
@@ -31,10 +28,6 @@ const AddTaskForm = () => {
         try {
             const task = { ...formData, userId };
             reset();
-
-            // Update local state
-            // setTasks([...tasks, task]);
-            // setFormState(initialFormState);
 
             // Update DynamoDB
             const result = await client.graphql({
@@ -58,19 +51,11 @@ const AddTaskForm = () => {
         <form onSubmit={handleSubmit(submitForm)}>
             <input
                 {...register("name", { required: true })}
-                // onChange={(event) =>
-                //     setFormState({ ...formState, name: event.target.value })
-                // }
-                // value={formState.name}
                 placeholder="Task"
                 required
             />
             <input
                 {...register("description")}
-                // onChange={(event) =>
-                //     setFormState({ ...formState, description: event.target.value })
-                // }
-                // value={formState.description as string}
                 placeholder="Description"
             />
             <button type="submit">
