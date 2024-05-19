@@ -14,12 +14,11 @@ const TasksPage: React.FC<TasksProps> = () => {
     return (
         <View
             as="div"
+            className="flex flex-col space-y-3"
         >
             <TaskList />
-
-            <AddTaskForm />
-
             <RandomTask />
+            <AddTaskForm />
         </View>
     );
 }

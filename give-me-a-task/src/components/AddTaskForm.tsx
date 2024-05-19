@@ -5,7 +5,7 @@ import { createTask } from "../graphql/mutations";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { UserContext } from "../context/UserContext";
 import { TaskContext } from "../context/TaskContext";
-import { Button, Input, TextAreaField, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, Heading, Input, TextAreaField, View, useTheme } from "@aws-amplify/ui-react";
 
 import { IoMdAdd as AddIcon } from "react-icons/io";
 
@@ -56,8 +56,16 @@ const AddTaskForm = () => {
         <View
             as="div"
             backgroundColor={tokens.colors.dark}
-            className="rounded-b-lg p-3"
+            className="rounded-lg p-3 space-y-3"
         >
+            <Heading
+                level={6}
+                color={tokens.colors.light}
+                className="text-center"
+            >
+                Add a task
+            </Heading>
+
             <form
                 onSubmit={handleSubmit(submitForm)}
                 className="flex flex-col justify-center space-y-1"
@@ -91,7 +99,7 @@ const AddTaskForm = () => {
                     borderRadius="8px"
                 >
                     <AddIcon size={18} className="mr-1" />
-                    Add task
+                    Add
                 </Button>
             </form>
         </View>

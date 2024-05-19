@@ -52,11 +52,15 @@ const App: React.FC<AppProps> = ({ signOut }) => {
   }, []);
 
   return (
+    // Background
     <View
       as="div"
-      padding="2rem"
-      backgroundColor={tokens.colors.light}
+      backgroundColor={tokens.colors.medium}
+      width="100vw"
+      height="100vh"
     >
+
+      {/* Routes */}
       <Routes>
         <Route element={<Header signOut={signOut} />}>
           <Route path="/" element={<TasksPage />} />

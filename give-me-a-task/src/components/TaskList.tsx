@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ListTasksData } from "../types";
 
 import { listTasks } from '../graphql/queries.ts';
@@ -9,12 +9,16 @@ import { TaskContext } from "../context/TaskContext.tsx";
 
 import { Heading, ScrollView, View, useTheme } from '@aws-amplify/ui-react';
 import TaskCard from "./TaskCard.tsx";
+import { FaEnvelope as ClosedEnvelopeIcon } from "react-icons/fa";
+import { FaEnvelopeOpen as OpenEnvelopeIcon } from "react-icons/fa";
+
 
 const client = generateClient();
 
 const TaskList = () => {
     const { userId } = useContext(UserContext);
     const { tasks, setTasks } = useContext(TaskContext);
+    const [showTasks, setShowTasks] = useState(false);
 
     const { tokens } = useTheme();
 
@@ -51,28 +55,39 @@ const TaskList = () => {
         <View
             as="div"
             backgroundColor={tokens.colors.dark}
-            className="flex flex-col items-center w-80 space-y-3 py-3 rounded-t-lg"
+            className="flex flex-col items-center space-y-4 py-3 rounded-lg"
         >
             {/* Heading */}
             <Heading level={5} color={tokens.colors.light}>
                 My Tasks
             </Heading>
 
-            {/* Tasks */}
-            <ScrollView
-                width="100%"
-                height="90%"
-                className="flex flex-col space-y-2 px-3"
+            <View
+                as="div"
+                onClick={() => setShowTasks(!showTasks)}
+                color={tokens.colors.light}
+                className="cursor-pointer"
             >
-                {
-                    tasks.map((task) => (
-                        <TaskCard
-                            key={task.id}
-                            task={task}
-                        />
-                    ))
-                }
-            </ScrollView>
+                {showTasks ? <OpenEnvelopeIcon size={30} /> : <ClosedEnvelopeIcon size={30} />}
+            </View>
+
+            {/* Tasks */}
+            {showTasks &&
+                <ScrollView
+                    width="100%"
+                    height="90%"
+                    className="flex flex-col space-y-2 px-3"
+                >
+                    {
+                        tasks.map((task) => (
+                            <TaskCard
+                                key={task.id}
+                                task={task}
+                            />
+                        ))
+                    }
+                </ScrollView>
+            }
         </View>
     );
 }
