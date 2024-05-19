@@ -35,8 +35,11 @@ const TaskList = () => {
     }
 
     useEffect(() => {
-        console.log("TaskList.tsx, userId:", userId);
-        fetchTasks();
+        if (userId) {
+            console.log("TaskList.tsx, user ID:", userId);
+            fetchTasks();
+        }
+        else console.log("TaskList.tsx: No user ID");
     }, [userId]);
 
     return (

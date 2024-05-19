@@ -8,6 +8,7 @@ import { FetchUserAttributesOutput, fetchUserAttributes, getCurrentUser } from '
 import TasksPage from './components/TasksPage';
 import { useContext, useEffect } from 'react';
 import { UserContext } from './context/UserContext';
+import { TaskContext } from './context/TaskContext';
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]; //() => void;
@@ -15,7 +16,8 @@ type AppProps = {
 
 const App: React.FC<AppProps> = ({ signOut }) => {
 
-  const { setUserId } = useContext(UserContext);
+  const { userId, setUserId } = useContext(UserContext);
+  const { setTasks } = useContext(TaskContext);
 
   // Fetch username
   const fetchCurrentUsername = async () => {
@@ -43,6 +45,13 @@ const App: React.FC<AppProps> = ({ signOut }) => {
     }
   }
 
+  const handleSignOut = () => {
+    if (signOut) signOut();
+
+    setUserId("");
+    setTasks([]);
+  }
+
   useEffect(() => {
     fetchCurrentUsername();
     getUserAttributes();
@@ -50,7 +59,7 @@ const App: React.FC<AppProps> = ({ signOut }) => {
 
   return (
     <div>
-      <button onClick={signOut}>
+      <button onClick={handleSignOut}>
         Sign out
       </button>
       <Routes>
