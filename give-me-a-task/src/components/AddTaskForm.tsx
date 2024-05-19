@@ -34,7 +34,7 @@ const AddTaskForm = () => {
             const task = { ...formData, userId };
             reset();
 
-            // Update DynamoDB
+            // Create record in DynamoDB
             const result = await client.graphql({
                 query: createTask,
                 variables: {
@@ -42,13 +42,15 @@ const AddTaskForm = () => {
                 },
             }) as GraphQLResult<CreateTaskData>;
 
+            // Update local state
             const addedTask = result.data.createTask;
-
-            console.log("Task added successfully:", addedTask)
             setTasks([...tasks, addedTask]);
 
-        } catch (err) {
-            console.log('Error creating task:', err);
+            console.log("Task added successfully:", addedTask);
+
+        }
+        catch (error) {
+            console.log('Error creating task:', error);
         }
     }
 

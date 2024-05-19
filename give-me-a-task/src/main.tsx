@@ -6,6 +6,7 @@ import App from './App.tsx'
 
 import { UserProvider } from './context/UserContext.tsx';
 import { TaskProvider } from './context/TaskContext.tsx';
+import { PopupProvider } from './context/PopupContext.tsx';
 
 import './index.css'
 
@@ -34,11 +35,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <UserProvider>
       <TaskProvider>
-        <ThemeProvider theme={theme}>
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>
-        </ThemeProvider>
+        <PopupProvider>
+          <ThemeProvider theme={theme}>
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          </ThemeProvider>
+        </PopupProvider>
       </TaskProvider>
     </UserProvider>
   </BrowserRouter>

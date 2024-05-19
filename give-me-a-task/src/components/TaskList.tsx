@@ -11,6 +11,8 @@ import { Heading, ScrollView, View, useTheme } from '@aws-amplify/ui-react';
 import TaskCard from "./TaskCard.tsx";
 import { FaEnvelope as ClosedEnvelopeIcon } from "react-icons/fa";
 import { FaEnvelopeOpen as OpenEnvelopeIcon } from "react-icons/fa";
+import { PopupContext } from "../context/PopupContext.tsx";
+import EditTaskForm from "./EditTaskForm.tsx";
 
 
 const client = generateClient();
@@ -19,6 +21,7 @@ const TaskList = () => {
     const { userId } = useContext(UserContext);
     const { tasks, setTasks } = useContext(TaskContext);
     const [showTasks, setShowTasks] = useState(false);
+    const { taskToEdit } = useContext(PopupContext);
 
     const { tokens } = useTheme();
 
@@ -51,6 +54,10 @@ const TaskList = () => {
         else console.log("TaskList.tsx: No user ID");
     }, [userId]);
 
+    useEffect(() => {
+        console.log("Task to edit:", taskToEdit);
+    }, [taskToEdit]);
+
     return (
         <View
             as="div"
@@ -79,12 +86,19 @@ const TaskList = () => {
                     className="flex flex-col space-y-2 px-3"
                 >
                     {
-                        tasks.map((task) => (
-                            <TaskCard
-                                key={task.id}
-                                task={task}
-                            />
-                        ))
+                        tasks.map((task) => {
+                            if (taskToEdit && taskToEdit.id === task.id) return (
+                                <EditTaskForm
+                                    key={task.id}
+                                />
+                            )
+                            else return (
+                                <TaskCard
+                                    key={task.id}
+                                    task={task}
+                                />
+                            )
+                        })
                     }
                 </ScrollView>
             }

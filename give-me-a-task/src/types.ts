@@ -25,3 +25,7 @@ export type ListTasksData = {
 export type CreateTaskData = {
     createTask: Task
 }
+
+export type UpdateTaskData = {
+    updateTask: Task
+}
