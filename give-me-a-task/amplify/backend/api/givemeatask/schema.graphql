@@ -5,21 +5,7 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONL
 type Task @model {
   id: ID!
   createdAt: AWSDateTime!
-  name: String!
   description: String
-}
-
-type User @model {
-  id: ID!
-  createdAt: AWSDateTime!
-  email: AWSEmail!
-  firstName: String!
-  lastName: String!
-  username: String! @index
-}
-
-type UserTask @model {
-  id: ID!
-  taskId: ID!
-  userId: ID!
+  name: String!
+  userId: String!
 }

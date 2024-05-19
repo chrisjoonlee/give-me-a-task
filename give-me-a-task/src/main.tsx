@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom';
 
 import App from './App.tsx'
 
+import { UserProvider } from './context/UserContext.tsx';
+import { TaskProvider } from './context/TaskContext.tsx';
+
 import './index.css'
 
 import { Amplify } from 'aws-amplify';
@@ -12,8 +15,12 @@ Amplify.configure(amplifyconfig);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <UserProvider>
+      <TaskProvider>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      </TaskProvider>
+    </UserProvider>
   </BrowserRouter>
 )

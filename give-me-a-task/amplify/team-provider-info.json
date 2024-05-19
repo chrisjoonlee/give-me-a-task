@@ -23,6 +23,9 @@
           "appId": "d2de08g4x9pahn",
           "type": "manual"
         }
+      },
+      "storage": {
+        "givemeataskstorage": {}
       }
     }
   }

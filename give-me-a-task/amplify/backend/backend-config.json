@@ -67,5 +67,12 @@
         }
       ]
     }
+  },
+  "storage": {
+    "givemeataskstorage": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
   }
 }
