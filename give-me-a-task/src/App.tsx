@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 
-import { withAuthenticator } from '@aws-amplify/ui-react';
+import { View, useTheme, withAuthenticator } from '@aws-amplify/ui-react';
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 import '@aws-amplify/ui-react/styles.css';
 import { FetchUserAttributesOutput, fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth';
@@ -8,7 +8,7 @@ import { FetchUserAttributesOutput, fetchUserAttributes, getCurrentUser } from '
 import TasksPage from './components/TasksPage';
 import { useContext, useEffect } from 'react';
 import { UserContext } from './context/UserContext';
-import { TaskContext } from './context/TaskContext';
+import Header from './components/Header';
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]; //() => void;
@@ -16,8 +16,9 @@ type AppProps = {
 
 const App: React.FC<AppProps> = ({ signOut }) => {
 
-  const { userId, setUserId } = useContext(UserContext);
-  const { setTasks } = useContext(TaskContext);
+  const { setUserId } = useContext(UserContext);
+
+  const { tokens } = useTheme();
 
   // Fetch username
   const fetchCurrentUsername = async () => {
@@ -45,27 +46,23 @@ const App: React.FC<AppProps> = ({ signOut }) => {
     }
   }
 
-  const handleSignOut = () => {
-    if (signOut) signOut();
-
-    setUserId("");
-    setTasks([]);
-  }
-
   useEffect(() => {
     fetchCurrentUsername();
     getUserAttributes();
   }, []);
 
   return (
-    <div>
-      <button onClick={handleSignOut}>
-        Sign out
-      </button>
+    <View
+      as="div"
+      padding="2rem"
+      backgroundColor={tokens.colors.light}
+    >
       <Routes>
-        <Route path="/" element={<TasksPage />} />
+        <Route element={<Header signOut={signOut} />}>
+          <Route path="/" element={<TasksPage />} />
+        </Route>
       </Routes>
-    </div>
+    </View>
   );
 };
 

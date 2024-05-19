@@ -7,11 +7,16 @@ import { UserContext } from "../context/UserContext.tsx";
 
 import { TaskContext } from "../context/TaskContext.tsx";
 
+import { Heading, ScrollView, View, useTheme } from '@aws-amplify/ui-react';
+import TaskCard from "./TaskCard.tsx";
+
 const client = generateClient();
 
 const TaskList = () => {
     const { userId } = useContext(UserContext);
     const { tasks, setTasks } = useContext(TaskContext);
+
+    const { tokens } = useTheme();
 
     const fetchTasks = async () => {
         try {
@@ -43,17 +48,32 @@ const TaskList = () => {
     }, [userId]);
 
     return (
-        <>
-            <h2>Task list</h2>
-            {
-                tasks.map((task) => (
-                    <div key={task.id}>
-                        <p>{task.name}</p>
-                        <p>{task.description}</p>
-                    </div>
-                ))
-            }
-        </>
+        <View
+            as="div"
+            backgroundColor={tokens.colors.dark}
+            className="flex flex-col items-center w-80 space-y-3 py-3 rounded-t-lg"
+        >
+            {/* Heading */}
+            <Heading level={5} color={tokens.colors.light}>
+                My Tasks
+            </Heading>
+
+            {/* Tasks */}
+            <ScrollView
+                width="100%"
+                height="90%"
+                className="flex flex-col space-y-2 px-3"
+            >
+                {
+                    tasks.map((task) => (
+                        <TaskCard
+                            key={task.id}
+                            task={task}
+                        />
+                    ))
+                }
+            </ScrollView>
+        </View>
     );
 }
 

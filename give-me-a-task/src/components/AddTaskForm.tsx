@@ -5,6 +5,9 @@ import { createTask } from "../graphql/mutations";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { UserContext } from "../context/UserContext";
 import { TaskContext } from "../context/TaskContext";
+import { Button, Input, TextAreaField, View, useTheme } from "@aws-amplify/ui-react";
+
+import { IoMdAdd as AddIcon } from "react-icons/io";
 
 const client = generateClient();
 
@@ -16,6 +19,8 @@ type FormValues = {
 const AddTaskForm = () => {
     const { userId } = useContext(UserContext);
     const { tasks, setTasks } = useContext(TaskContext);
+
+    const { tokens } = useTheme();
 
     const { register, handleSubmit, reset } = useForm({
         defaultValues: {
@@ -48,20 +53,48 @@ const AddTaskForm = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit(submitForm)}>
-            <input
-                {...register("name", { required: true })}
-                placeholder="Task"
-                required
-            />
-            <input
-                {...register("description")}
-                placeholder="Description"
-            />
-            <button type="submit">
-                Create Task
-            </button>
-        </form>
+        <View
+            as="div"
+            backgroundColor={tokens.colors.dark}
+            className="rounded-b-lg p-3"
+        >
+            <form
+                onSubmit={handleSubmit(submitForm)}
+                className="flex flex-col justify-center space-y-1"
+            >
+                <Input
+                    {...register("name", { required: true })}
+                    placeholder="Task"
+                    required
+                    backgroundColor={tokens.colors.dark}
+                    color={tokens.colors.light}
+                    className="rounded-lg"
+                />
+
+                <TextAreaField
+                    {...register("description")}
+                    rows={3}
+                    placeholder="Description (optional)"
+                    name="description"
+                    label="description"
+                    labelHidden={true}
+                    backgroundColor={tokens.colors.dark}
+                    borderRadius="8px"
+                    style={{ color: `${tokens.colors.light}` }}
+                />
+
+                <Button
+                    type="submit"
+                    backgroundColor={tokens.colors.dark}
+                    color={tokens.colors.light}
+                    size="small"
+                    borderRadius="8px"
+                >
+                    <AddIcon size={18} className="mr-1" />
+                    Add task
+                </Button>
+            </form>
+        </View>
     );
 }
 

@@ -13,13 +13,32 @@ import { Amplify } from 'aws-amplify';
 import amplifyconfig from './amplifyconfiguration.json';
 Amplify.configure(amplifyconfig);
 
+import { Theme, ThemeProvider } from '@aws-amplify/ui-react';
+
+import '@aws-amplify/ui-react/styles.css';
+// import '@fontsource/inter/variable.css';
+
+const theme: Theme = {
+  name: 'my-theme',
+  tokens: {
+    colors: {
+      white: { value: '#ffffff' },
+      light: { value: '#b6c2cf' },
+      medium: { value: '#22272b' },
+      dark: { value: '#101204' }
+    },
+  },
+};
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <UserProvider>
       <TaskProvider>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
+        <ThemeProvider theme={theme}>
+          <React.StrictMode>
+            <App />
+          </React.StrictMode>
+        </ThemeProvider>
       </TaskProvider>
     </UserProvider>
   </BrowserRouter>

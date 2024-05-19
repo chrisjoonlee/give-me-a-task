@@ -4,23 +4,23 @@ import '@aws-amplify/ui-react/styles.css';
 import AddTaskForm from "./AddTaskForm.tsx";
 import TaskList from "./TaskList.tsx";
 import RandomTask from "./RandomTask.tsx";
+import { View } from "@aws-amplify/ui-react";
 
 type TasksProps = {
     user?: AuthUser;
 }
 
-const TasksPage: React.FC<TasksProps> = ({ user }) => {
+const TasksPage: React.FC<TasksProps> = () => {
     return (
-        <>
-            {user && <h1>Hello, {user.username}</h1>}
-            <h2>My Tasks</h2>
+        <View
+            as="div"
+        >
+            <TaskList />
 
             <AddTaskForm />
 
-            <TaskList />
-
             <RandomTask />
-        </>
+        </View>
     );
 }
 
