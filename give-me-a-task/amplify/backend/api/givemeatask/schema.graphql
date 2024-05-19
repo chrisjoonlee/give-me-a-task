@@ -6,6 +6,7 @@ type Task @model {
   id: ID!
   createdAt: AWSDateTime!
   description: String
+  index: Int!
   name: String!
   userId: String!
 }

@@ -4,7 +4,7 @@ import { UserContext } from "../context/UserContext";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { PopupContext } from "../context/PopupContext";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { updateTask } from "../graphql/mutations";
+import { updateTask } from "../graphql/mutations.ts";
 import { UpdateTaskData } from "../types";
 import { TaskContext } from "../context/TaskContext";
 

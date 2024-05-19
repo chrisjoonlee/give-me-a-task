@@ -2,6 +2,7 @@ export type Task = {
     id: string
     createdAt: string
     description?: string
+    index: number
     name: string
     userId: string
 }
@@ -9,11 +10,8 @@ export type Task = {
 export type CreateTaskInput = {
     name: string
     description?: string
+    index: number
     userId: string
-}
-
-export const isTask = (task: Task | CreateTaskInput): task is Task => {
-    return (task as Task).id !== undefined;
 }
 
 export type ListTasksData = {

@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TaskContext } from "../context/TaskContext";
 import { Task } from "../types";
-import { Button, View, useTheme } from "@aws-amplify/ui-react";
-import TaskCard from "./TaskCard";
+import { Button, Text, View, useTheme } from "@aws-amplify/ui-react";
+import RandomTaskCard from "./RandomTaskCard";
 
 const RandomTask = () => {
     const { tasks } = useContext(TaskContext);
     const [currentIndex, setCurrentIndex] = useState<number>(-1);
-    const [randomTask, setRandomTask] = useState<Task | null>(null);
+    const [randomTask, setRandomTask] = useState<Task | boolean | null>(null);
 
     const { tokens } = useTheme();
 
@@ -25,8 +25,12 @@ const RandomTask = () => {
             console.log("Random index:", randomIndex);
             setRandomTask(tasks[randomIndex]);
         }
-        else setRandomTask(null);
+        else setRandomTask(false);
     }
+
+    useEffect(() => {
+        if (randomTask === false) setRandomTask(null);
+    }, [tasks]);
 
     return (
         <View
@@ -45,12 +49,15 @@ const RandomTask = () => {
                 Give me a task
             </Button>
 
-            {randomTask && (
-                <TaskCard
-                    task={randomTask}
-                    full={true}
-                />
-            )}
+            {/* Show random task */}
+            {randomTask && randomTask !== true &&
+                <RandomTaskCard task={randomTask} />
+            }
+
+            {/* If there are no tasks */}
+            {randomTask === false &&
+                <Text color={tokens.colors.light}>You have no tasks!</Text>
+            }
         </View>
     );
 }

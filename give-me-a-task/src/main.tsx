@@ -17,7 +17,6 @@ Amplify.configure(amplifyconfig);
 import { Theme, ThemeProvider } from '@aws-amplify/ui-react';
 
 import '@aws-amplify/ui-react/styles.css';
-// import '@fontsource/inter/variable.css';
 
 const theme: Theme = {
   name: 'my-theme',

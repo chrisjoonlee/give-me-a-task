@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { CreateTaskData } from "../types";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { createTask } from "../graphql/mutations";
+import { createTask } from "../graphql/mutations.ts";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { UserContext } from "../context/UserContext";
 import { TaskContext } from "../context/TaskContext";
@@ -31,7 +31,12 @@ const AddTaskForm = () => {
 
     const submitForm: SubmitHandler<FormValues> = async (formData: FormValues) => {
         try {
-            const task = { ...formData, userId };
+            const task = {
+                ...formData,
+                userId,
+                index: tasks.length
+            };
+
             reset();
 
             // Create record in DynamoDB

@@ -7,6 +7,7 @@ export const onCreateTask = /* GraphQL */ `
       id
       createdAt
       description
+      index
       name
       userId
       updatedAt
@@ -20,6 +21,7 @@ export const onUpdateTask = /* GraphQL */ `
       id
       createdAt
       description
+      index
       name
       userId
       updatedAt
@@ -33,6 +35,7 @@ export const onDeleteTask = /* GraphQL */ `
       id
       createdAt
       description
+      index
       name
       userId
       updatedAt

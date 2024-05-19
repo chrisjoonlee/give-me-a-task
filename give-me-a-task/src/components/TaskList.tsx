@@ -7,12 +7,13 @@ import { UserContext } from "../context/UserContext.tsx";
 
 import { TaskContext } from "../context/TaskContext.tsx";
 
-import { Heading, ScrollView, View, useTheme } from '@aws-amplify/ui-react';
+import { Heading, ScrollView, Text, View, useTheme } from '@aws-amplify/ui-react';
 import TaskCard from "./TaskCard.tsx";
 import { FaEnvelope as ClosedEnvelopeIcon } from "react-icons/fa";
 import { FaEnvelopeOpen as OpenEnvelopeIcon } from "react-icons/fa";
 import { PopupContext } from "../context/PopupContext.tsx";
 import EditTaskForm from "./EditTaskForm.tsx";
+import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
 
 
 const client = generateClient();
@@ -46,6 +47,27 @@ const TaskList = () => {
         }
     }
 
+    // Change task order after drag & drop
+    const onDragEnd = (result: DropResult) => {
+        const { destination, source } = result;
+
+        if (!destination) return;
+
+        if (
+            destination.droppableId === source.droppableId &&
+            destination.index === source.index
+        ) return;
+
+        // Update local state
+        const newTasks = [...tasks];
+        const movedTasks = newTasks.splice(source.index, 1);
+        newTasks.splice(destination.index, 0, ...movedTasks);
+        setTasks(newTasks);
+
+        // Update records in DynamoDB
+
+    }
+
     useEffect(() => {
         if (userId) {
             console.log("TaskList.tsx, user ID:", userId);
@@ -62,13 +84,14 @@ const TaskList = () => {
         <View
             as="div"
             backgroundColor={tokens.colors.dark}
-            className="flex flex-col items-center space-y-4 py-3 rounded-lg"
+            className="flex flex-col items-center space-y-4 pt-3 pb-5 rounded-lg"
         >
             {/* Heading */}
             <Heading level={5} color={tokens.colors.light}>
                 My Tasks
             </Heading>
 
+            {/* Envelope icon */}
             <View
                 as="div"
                 onClick={() => setShowTasks(!showTasks)}
@@ -78,29 +101,45 @@ const TaskList = () => {
                 {showTasks ? <OpenEnvelopeIcon size={30} /> : <ClosedEnvelopeIcon size={30} />}
             </View>
 
+            {showTasks && tasks.length <= 0 &&
+                <Text color={tokens.colors.light}>
+                    You have no tasks!
+                </Text>
+            }
+
             {/* Tasks */}
-            {showTasks &&
-                <ScrollView
-                    width="100%"
-                    height="90%"
-                    className="flex flex-col space-y-2 px-3"
-                >
-                    {
-                        tasks.map((task) => {
-                            if (taskToEdit && taskToEdit.id === task.id) return (
-                                <EditTaskForm
-                                    key={task.id}
-                                />
-                            )
-                            else return (
-                                <TaskCard
-                                    key={task.id}
-                                    task={task}
-                                />
-                            )
-                        })
-                    }
-                </ScrollView>
+            {showTasks && tasks.length > 0 &&
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="task-list">
+                        {provided => (
+                            <ScrollView
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                                width="100%"
+                                height="90%"
+                                className="flex flex-col space-y-2 px-3"
+                            >
+                                {
+                                    tasks.map((task, index) => {
+                                        if (taskToEdit && taskToEdit.id === task.id) return (
+                                            <EditTaskForm
+                                                key={task.id}
+                                            />
+                                        )
+                                        else return (
+                                            <TaskCard
+                                                key={task.id}
+                                                index={index}
+                                                task={task}
+                                            />
+                                        )
+                                    })
+                                }
+                                {provided.placeholder}
+                            </ScrollView>
+                        )}
+                    </Droppable>
+                </DragDropContext>
             }
         </View>
     );

@@ -7,6 +7,7 @@ export const getTask = /* GraphQL */ `
       id
       createdAt
       description
+      index
       name
       userId
       updatedAt
@@ -25,6 +26,7 @@ export const listTasks = /* GraphQL */ `
         id
         createdAt
         description
+        index
         name
         userId
         updatedAt
