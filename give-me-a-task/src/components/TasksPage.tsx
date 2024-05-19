@@ -3,6 +3,7 @@ import '@aws-amplify/ui-react/styles.css';
 
 import AddTaskForm from "./AddTaskForm.tsx";
 import TaskList from "./TaskList.tsx";
+import RandomTask from "./RandomTask.tsx";
 
 type TasksProps = {
     user?: AuthUser;
@@ -17,6 +18,8 @@ const TasksPage: React.FC<TasksProps> = ({ user }) => {
             <AddTaskForm />
 
             <TaskList />
+
+            <RandomTask />
         </>
     );
 }
