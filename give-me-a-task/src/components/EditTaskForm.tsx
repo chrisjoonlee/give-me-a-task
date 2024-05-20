@@ -1,12 +1,13 @@
 import { Button, View, useTheme } from "@aws-amplify/ui-react";
 import { useContext, useEffect, useRef } from "react";
 import { UserContext } from "../context/UserContext";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { PopupContext } from "../context/PopupContext";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { updateTask } from "../graphql/mutations.ts";
 import { UpdateTaskData } from "../types";
 import { TaskContext } from "../context/TaskContext";
+import TextareaAutosize from 'react-textarea-autosize';
 
 type FormValues = {
     name: string
@@ -22,7 +23,7 @@ const EditTaskForm = () => {
     const { tasks, setTasks } = useContext(TaskContext);
     const formRef = useRef<HTMLDivElement>(null);
 
-    const { register, handleSubmit, reset } = useForm<FormValues>({
+    const { register, handleSubmit, reset, control } = useForm<FormValues>({
         defaultValues: {
             name: taskToEdit ? taskToEdit.name : "",
             description: taskToEdit ? taskToEdit.description : ""
@@ -89,26 +90,56 @@ const EditTaskForm = () => {
         >
             <form
                 onSubmit={handleSubmit(submitForm)}
-                className="flex flex-col justify-center space-y-1 rounded-lg"
+                className="flex flex-col justify-center space-y-4 rounded-lg"
             >
-                <input
+                <Controller
+                    name="name"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                        <TextareaAutosize
+                            {...field}
+                            required
+                            minRows={1}
+                            maxRows={15}
+                            placeholder="Task"
+                            className="text-light bg-medium"
+                        />
+                    )}
+                />
+
+                {/* <input
                     {...register("name", { required: true })}
                     type="text"
                     placeholder="Task"
                     className={`text-light bg-medium`}
                     required
+                /> */}
+
+                <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                        <TextareaAutosize
+                            {...field}
+                            minRows={3}
+                            maxRows={15}
+                            placeholder="Description (optional)"
+                            className="text-light bg-medium"
+                        />
+                    )}
                 />
 
-                <textarea
+                {/* <textarea
                     {...register("description")}
                     rows={3}
                     placeholder="Description (optional)"
                     name="description"
                     style={{ resize: "none" }}
                     className={`text-light bg-medium`}
-                />
+                /> */}
 
-                <Button
+                {/* <Button
                     type="submit"
                     backgroundColor={tokens.colors.medium}
                     color={tokens.colors.light}
@@ -116,7 +147,14 @@ const EditTaskForm = () => {
                     borderRadius="8px"
                 >
                     Save
-                </Button>
+                </Button> */}
+
+                <button
+                    type="submit"
+                    className="border border-light bg-medium rounded-lg flex items-center justify-center"
+                >
+                    Save
+                </button>
             </form>
         </View >
     );

@@ -1,7 +1,7 @@
 import { Text, View, useTheme } from "@aws-amplify/ui-react";
 import { Task } from "../types.ts";
 import { HiOutlineMenuAlt2 as ExpandIcon } from "react-icons/hi";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { MdEdit as EditIcon } from "react-icons/md";
 import { PopupContext } from "../context/PopupContext";
 import { Draggable } from "@hello-pangea/dnd";
@@ -53,7 +53,13 @@ const TaskCard = ({ index, task }: TaskCardProps) => {
                         color={tokens.colors.light}
                         className={`${open && 'font-bold'}`}
                     >
-                        {task.name}
+                        {/* {task.name} */}
+                        {task.name.split('\n').map((line, index) => (
+                            <React.Fragment key={index}>
+                                {line}
+                                <br />
+                            </React.Fragment>
+                        ))}
                     </Text>
 
                     {/* Description */}
@@ -62,7 +68,12 @@ const TaskCard = ({ index, task }: TaskCardProps) => {
                             color={tokens.colors.light}
                             marginTop="0.8rem"
                         >
-                            {task.description}
+                            {task.description.split('\n').map((line, index) => (
+                                <React.Fragment key={index}>
+                                    {line}
+                                    <br />
+                                </React.Fragment>
+                            ))}
                         </Text>
                     }
 

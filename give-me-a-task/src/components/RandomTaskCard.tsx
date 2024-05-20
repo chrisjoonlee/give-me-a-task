@@ -3,7 +3,7 @@ import { DeleteTaskData, Task } from "../types.ts";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { deleteTask } from "../graphql/mutations.ts";
 import { TaskContext } from "../context/TaskContext";
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
 
 const client = generateClient();
@@ -64,7 +64,7 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                     borderRadius="8px"
                     className="w-full text-center py-4"
                 >
-                    <Text color={tokens.colors.light}>Congratulations!</Text>
+                    <Text color={tokens.colors.light}>Great job!</Text>
                 </View>
             ) : (
                 <View
@@ -81,7 +81,12 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                             color={tokens.colors.light}
                             className="font-bold"
                         >
-                            {task.name}
+                            {task.name.split('\n').map((line, index) => (
+                                <React.Fragment key={index}>
+                                    {line}
+                                    <br />
+                                </React.Fragment>
+                            ))}
                         </Text>
 
                         {/* Description */}
@@ -90,7 +95,12 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                                 color={tokens.colors.light}
                                 marginTop="0.8rem"
                             >
-                                {task.description}
+                                {task.description.split('\n').map((line, index) => (
+                                    <React.Fragment key={index}>
+                                        {line}
+                                        <br />
+                                    </React.Fragment>
+                                ))}
                             </Text>
                         }
                     </View>

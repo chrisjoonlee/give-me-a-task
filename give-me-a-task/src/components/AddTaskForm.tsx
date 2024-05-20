@@ -2,10 +2,11 @@ import { useContext } from "react";
 import { CreateTaskData } from "../types";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { createTask } from "../graphql/mutations.ts";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { UserContext } from "../context/UserContext";
 import { TaskContext } from "../context/TaskContext";
-import { Button, Heading, Input, TextAreaField, View, useTheme } from "@aws-amplify/ui-react";
+import { Heading, View, useTheme } from "@aws-amplify/ui-react";
+import TextareaAutosize from 'react-textarea-autosize';
 
 import { IoMdAdd as AddIcon } from "react-icons/io";
 
@@ -22,7 +23,7 @@ const AddTaskForm = () => {
 
     const { tokens } = useTheme();
 
-    const { register, handleSubmit, reset } = useForm({
+    const { handleSubmit, reset, control } = useForm({
         defaultValues: {
             name: "",
             description: ""
@@ -79,37 +80,43 @@ const AddTaskForm = () => {
                 onSubmit={handleSubmit(submitForm)}
                 className="flex flex-col justify-center space-y-1"
             >
-                <Input
-                    {...register("name", { required: true })}
-                    placeholder="Task"
-                    required
-                    backgroundColor={tokens.colors.dark}
-                    color={tokens.colors.light}
-                    className="rounded-lg"
+                <Controller
+                    name="name"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                        <TextareaAutosize
+                            {...field}
+                            required
+                            minRows={1}
+                            maxRows={15}
+                            placeholder="Task"
+                            className="border border-light rounded-lg px-4 py-3"
+                        />
+                    )}
                 />
 
-                <TextAreaField
-                    {...register("description")}
-                    rows={3}
-                    placeholder="Description (optional)"
+                <Controller
                     name="description"
-                    label="description"
-                    labelHidden={true}
-                    backgroundColor={tokens.colors.dark}
-                    borderRadius="8px"
-                    style={{ color: `${tokens.colors.light}` }}
+                    control={control}
+                    render={({ field }) => (
+                        <TextareaAutosize
+                            {...field}
+                            minRows={3}
+                            maxRows={15}
+                            placeholder="Description (optional)"
+                            className="border border-light rounded-lg px-4 py-3"
+                        />
+                    )}
                 />
 
-                <Button
+                <button
                     type="submit"
-                    backgroundColor={tokens.colors.dark}
-                    color={tokens.colors.light}
-                    size="small"
-                    borderRadius="8px"
+                    className="border border-light bg-dark rounded-lg px-4 py-3 flex items-center justify-center"
                 >
                     <AddIcon size={18} className="mr-1" />
-                    Add
-                </Button>
+                    <div>Add</div>
+                </button>
             </form>
         </View>
     );
