@@ -1,17 +1,23 @@
 import { useContext, useEffect, useState } from "react";
 import { TaskContext } from "../context/TaskContext";
-import { Task } from "../types";
 import { Button, Text, View, useTheme } from "@aws-amplify/ui-react";
 import RandomTaskCard from "./RandomTaskCard";
 
 const RandomTask = () => {
-    const { tasks } = useContext(TaskContext);
+    const {
+        tasks,
+        currentTask, setCurrentTask,
+        setTaskCompleted
+    } = useContext(TaskContext);
     const [currentIndex, setCurrentIndex] = useState<number>(-1);
-    const [randomTask, setRandomTask] = useState<Task | boolean | null>(null);
+    // const [randomTask, setRandomTask] = useState<Task | boolean | null>(null);
 
     const { tokens } = useTheme();
 
     const generateRandomTask = () => {
+        setTaskCompleted(false);
+
+        // Generate a task
         if (tasks.length > 0) {
             console.log("Number of tasks:", tasks.length);
 
@@ -23,13 +29,15 @@ const RandomTask = () => {
             setCurrentIndex(randomIndex);
 
             console.log("Random index:", randomIndex);
-            setRandomTask(tasks[randomIndex]);
+            setCurrentTask(tasks[randomIndex]);
         }
-        else setRandomTask(false);
+        // There are no tasks to generate
+        else setCurrentTask(false);
     }
 
     useEffect(() => {
-        if (randomTask === false) setRandomTask(null);
+        // Reset current task if task list changes
+        if (currentTask === false) setCurrentTask(null);
     }, [tasks]);
 
     return (
@@ -50,12 +58,12 @@ const RandomTask = () => {
             </Button>
 
             {/* Show random task */}
-            {randomTask && randomTask !== true &&
-                <RandomTaskCard task={randomTask} />
+            {currentTask && currentTask !== true &&
+                <RandomTaskCard task={currentTask} />
             }
 
             {/* If there are no tasks */}
-            {randomTask === false &&
+            {currentTask === false &&
                 <Text color={tokens.colors.light}>You have no tasks!</Text>
             }
         </View>

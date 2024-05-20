@@ -1,5 +1,5 @@
 import { Text, View, useTheme } from "@aws-amplify/ui-react";
-import { Task } from "../types";
+import { Task } from "../types.ts";
 import { HiOutlineMenuAlt2 as ExpandIcon } from "react-icons/hi";
 import { useContext, useState } from "react";
 import { MdEdit as EditIcon } from "react-icons/md";

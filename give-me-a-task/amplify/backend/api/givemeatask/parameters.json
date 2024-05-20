@@ -1,5 +1,6 @@
 {
   "AppSyncApiName": "givemeatask",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": "ap-northeast-2_bd6678F0h"
 }

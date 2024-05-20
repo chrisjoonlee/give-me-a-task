@@ -34,10 +34,12 @@ const AddTaskForm = () => {
             const task = {
                 ...formData,
                 userId,
-                index: tasks.length
+                index: tasks[tasks.length - 1].index + 1,
             };
 
             reset();
+
+            console.log("Task to add:", task);
 
             // Create record in DynamoDB
             const result = await client.graphql({

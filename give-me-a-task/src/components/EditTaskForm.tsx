@@ -35,6 +35,7 @@ const EditTaskForm = () => {
                 const task = {
                     ...formData,
                     id: taskToEdit.id,
+                    index: taskToEdit.index,
                     userId
                 };
                 reset();
@@ -55,7 +56,7 @@ const EditTaskForm = () => {
                 console.log("Task updated successfully:", updatedTask);
             }
             catch (error) {
-                console.log('Error creating task:', error);
+                console.log('Error updating task:', error);
             }
         }
     }

@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { ListTasksData } from "../types";
+import { SearchTasksData, Task, UpdateTaskData } from "../types";
 
-import { listTasks } from '../graphql/queries.ts';
+import { searchTasks } from '../graphql/queries.ts';
+import { updateTask } from '../graphql/mutations.ts';
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { UserContext } from "../context/UserContext.tsx";
 
@@ -30,15 +31,19 @@ const TaskList = () => {
         try {
             // Send request to DynamoDB
             const taskData = await client.graphql({
-                query: listTasks,
+                query: searchTasks,
                 variables: {
                     filter: {
                         userId: { eq: userId }
+                    },
+                    sort: {
+                        direction: "asc",
+                        field: "index"
                     }
                 }
-            }) as GraphQLResult<ListTasksData>;
+            }) as GraphQLResult<SearchTasksData>;
 
-            const tasks = taskData.data.listTasks.items;
+            const tasks = taskData.data.searchTasks.items;
 
             console.log("Task list:", tasks);
             setTasks(tasks);
@@ -47,8 +52,34 @@ const TaskList = () => {
         }
     }
 
+    const updateTaskIndex = async (task: Task, index: number) => {
+        try {
+            console.log("Task to update:", task);
+            console.log("New index:", index);
+
+            // Update record in DynamoDB
+            const result = await client.graphql({
+                query: updateTask,
+                variables: {
+                    input: {
+                        id: task.id,
+                        index
+                    }
+                }
+            }) as GraphQLResult<UpdateTaskData>;
+
+            const updatedTask = result.data.updateTask;
+            console.log("Task updated successfully:", updatedTask);
+        }
+        catch (error) {
+            console.log('Error updating task:', error);
+        }
+    }
+
     // Change task order after drag & drop
     const onDragEnd = (result: DropResult) => {
+        console.log("ON DRAG END");
+
         const { destination, source } = result;
 
         if (!destination) return;
@@ -65,7 +96,9 @@ const TaskList = () => {
         setTasks(newTasks);
 
         // Update records in DynamoDB
-
+        newTasks.forEach((task, index) => {
+            if (task.index !== index) updateTaskIndex(task, index);
+        })
     }
 
     useEffect(() => {

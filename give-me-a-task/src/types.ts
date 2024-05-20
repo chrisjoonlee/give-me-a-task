@@ -1,17 +1,20 @@
 export type Task = {
-    id: string
-    createdAt: string
-    description?: string
-    index: number
-    name: string
-    userId: string
+    id: string;
+    createdAt: string;
+    description?: string;
+    index: number;
+    name: string;
+    updatedAt?: string;
+    userId: string;
 }
 
 export type CreateTaskInput = {
-    name: string
-    description?: string
-    index: number
-    userId: string
+    id?: string;
+    createdAt?: string;
+    name: string;
+    description?: string;
+    index: number;
+    userId: string;
 }
 
 export type ListTasksData = {
@@ -20,10 +23,20 @@ export type ListTasksData = {
     }
 }
 
+export type SearchTasksData = {
+    searchTasks: {
+        items: Task[]
+    }
+}
+
 export type CreateTaskData = {
-    createTask: Task
+    createTask: Task;
 }
 
 export type UpdateTaskData = {
-    updateTask: Task
+    updateTask: Task;
+}
+
+export type DeleteTaskData = {
+    deleteTask: Task;
 }

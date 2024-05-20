@@ -17,6 +17,7 @@ Amplify.configure(amplifyconfig);
 import { Theme, ThemeProvider } from '@aws-amplify/ui-react';
 
 import '@aws-amplify/ui-react/styles.css';
+import { CompletedTasksProvider } from './context/CompletedTasksContext.tsx';
 
 const theme: Theme = {
   name: 'my-theme',
@@ -35,11 +36,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <UserProvider>
       <TaskProvider>
         <PopupProvider>
-          <ThemeProvider theme={theme}>
-            <React.StrictMode>
-              <App />
-            </React.StrictMode>
-          </ThemeProvider>
+          <CompletedTasksProvider>
+            <ThemeProvider theme={theme}>
+              <React.StrictMode>
+                <App />
+              </React.StrictMode>
+            </ThemeProvider>
+          </CompletedTasksProvider>
         </PopupProvider>
       </TaskProvider>
     </UserProvider>
