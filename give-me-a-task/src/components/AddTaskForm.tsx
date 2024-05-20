@@ -34,7 +34,7 @@ const AddTaskForm = () => {
             const task = {
                 ...formData,
                 userId,
-                index: tasks[tasks.length - 1].index + 1,
+                index: tasks.length > 0 ? tasks[tasks.length - 1].index + 1 : 0
             };
 
             reset();
