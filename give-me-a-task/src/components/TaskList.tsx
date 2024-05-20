@@ -123,7 +123,8 @@ const TaskList = () => {
             {/* Envelope icon */}
             <div
                 onClick={() => setShowTasks(!showTasks)}
-                className="cursor-pointer text-light"
+                className="cursor-pointer text-light
+                    hover:-rotate-6 hover:text-white"
             >
                 {showTasks ? <OpenEnvelopeIcon size={30} /> : <ClosedEnvelopeIcon size={30} />}
             </div>

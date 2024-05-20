@@ -1,0 +1,49 @@
+@keyframes slide-task-up {
+    0% {
+        transform: scale(1) translate(0, 0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.1) translate(0, -70rem);
+        opacity: 0;
+    }
+}
+
+.animate-slide-task-up {
+    animation: slide-task-up 0.8s ease-out;
+}
+
+
+
+@keyframes slide-task-left {
+    0% {
+        transform: scale(1) translate(0, 0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.1) translate(-70rem, -40rem);
+        opacity: 0;
+    }
+}
+
+.animate-slide-task-left {
+    animation: slide-task-left 0.8s ease-out;
+}
+
+
+
+.animate-glow {
+    color: grey;
+    display: inline-block;
+    mask: linear-gradient(-60deg, #fff 30%, #fff5, #fff 70%) right/300% 100%;
+    background-repeat: no-repeat;
+    animation: shimmer 2.5s infinite;
+}
+
+@keyframes shimmer {
+    100% {
+        mask-position: left
+    }
+}

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CreateTaskData } from "../types";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { createTask } from "../graphql/mutations.ts";
@@ -9,6 +9,7 @@ import { Heading, useTheme } from "@aws-amplify/ui-react";
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { IoMdAdd as AddIcon } from "react-icons/io";
+import './animations.css';
 
 const client = generateClient();
 
@@ -22,6 +23,7 @@ const AddTaskForm = () => {
     const { tasks, setTasks } = useContext(TaskContext);
 
     const { tokens } = useTheme();
+    const [animate, setAnimate] = useState(false);
 
     const { handleSubmit, reset, control } = useForm({
         defaultValues: {
@@ -31,6 +33,12 @@ const AddTaskForm = () => {
     });
 
     const submitForm: SubmitHandler<FormValues> = async (formData: FormValues) => {
+        // Explode animation
+        setAnimate(true);
+        setTimeout(() => {
+            setAnimate(false);
+        }, 1000);
+
         try {
             const task = {
                 ...formData,
@@ -55,15 +63,14 @@ const AddTaskForm = () => {
             setTasks([...tasks, addedTask]);
 
             console.log("Task added successfully:", addedTask);
-
         }
         catch (error) {
             console.log('Error creating task:', error);
         }
     }
 
-    return (
-        <div className="rounded-lg p-3 space-y-3 max-w-[300px] bg-dark">
+    const contents =
+        <>
             <Heading
                 level={6}
                 color={tokens.colors.light}
@@ -114,7 +121,24 @@ const AddTaskForm = () => {
                     <div>Add</div>
                 </button>
             </form>
-        </div>
+        </>
+
+    return (
+        <>
+            {/* Small screen animation */}
+            <div className={`rounded-lg p-3 space-y-3 max-w-[300px] bg-dark
+            sm:hidden
+            ${animate && 'animate-slide-task-up'}`}>
+                {contents}
+            </div>
+
+            {/* Large screen animation */}
+            <div className={`hidden rounded-lg p-3 space-y-3 max-w-[300px] bg-dark
+            sm:block
+            ${animate && 'animate-slide-task-left'}`}>
+                {contents}
+            </div>
+        </>
     );
 }
 

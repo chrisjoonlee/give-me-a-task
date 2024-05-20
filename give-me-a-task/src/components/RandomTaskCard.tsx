@@ -5,6 +5,7 @@ import { deleteTask } from "../graphql/mutations.ts";
 import { TaskContext } from "../context/TaskContext";
 import React, { useContext, useEffect } from "react";
 import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
+import './animations.css';
 
 const client = generateClient();
 
@@ -57,11 +58,17 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
 
     return (
         <>
+            {/* TASK COMPLETED */}
             {taskCompleted ? (
-                <div className="w-full text-center py-4 bg-medium rounded-lg">
-                    <Text color={tokens.colors.light}>Great job!</Text>
+                <div className="w-full text-center py-4 bg-medium rounded-lg animate-glow">
+                    <Text color={tokens.colors.light}>
+                        Great job!
+                    </Text>
                 </div>
+
             ) : (
+
+                // NORMAL TASK CARD
                 <div
                     key={task.id}
                     className="relative group w-full text-center pt-3 bg-medium rounded-lg"
