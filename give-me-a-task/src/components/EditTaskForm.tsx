@@ -1,4 +1,4 @@
-import { Button, View, useTheme } from "@aws-amplify/ui-react";
+import { useTheme } from "@aws-amplify/ui-react";
 import { useContext, useEffect, useRef } from "react";
 import { UserContext } from "../context/UserContext";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -23,7 +23,7 @@ const EditTaskForm = () => {
     const { tasks, setTasks } = useContext(TaskContext);
     const formRef = useRef<HTMLDivElement>(null);
 
-    const { register, handleSubmit, reset, control } = useForm<FormValues>({
+    const { handleSubmit, reset, control } = useForm<FormValues>({
         defaultValues: {
             name: taskToEdit ? taskToEdit.name : "",
             description: taskToEdit ? taskToEdit.description : ""
@@ -80,14 +80,16 @@ const EditTaskForm = () => {
     }, [taskToEdit]);
 
     return (
-        <View
-            as="div"
+        <div
             ref={formRef}
-            backgroundColor={tokens.colors.medium}
-            padding="0.5rem 1rem"
-            borderRadius="8px"
-            className="rounded-lg"
+            className="rounded-lg relative bg-medium px-4 py-3"
         >
+            {/* COMPLETE BUTTON */}
+            <button className="absolute bg-red-600 top-0 -right-12">
+                Complete
+            </button>
+
+            {/* EDIT TASK FORM */}
             <form
                 onSubmit={handleSubmit(submitForm)}
                 className="flex flex-col justify-center space-y-4 rounded-lg"
@@ -108,14 +110,6 @@ const EditTaskForm = () => {
                     )}
                 />
 
-                {/* <input
-                    {...register("name", { required: true })}
-                    type="text"
-                    placeholder="Task"
-                    className={`text-light bg-medium`}
-                    required
-                /> */}
-
                 <Controller
                     name="description"
                     control={control}
@@ -130,25 +124,6 @@ const EditTaskForm = () => {
                     )}
                 />
 
-                {/* <textarea
-                    {...register("description")}
-                    rows={3}
-                    placeholder="Description (optional)"
-                    name="description"
-                    style={{ resize: "none" }}
-                    className={`text-light bg-medium`}
-                /> */}
-
-                {/* <Button
-                    type="submit"
-                    backgroundColor={tokens.colors.medium}
-                    color={tokens.colors.light}
-                    size="small"
-                    borderRadius="8px"
-                >
-                    Save
-                </Button> */}
-
                 <button
                     type="submit"
                     className="border border-light bg-medium rounded-lg flex items-center justify-center"
@@ -156,7 +131,7 @@ const EditTaskForm = () => {
                     Save
                 </button>
             </form>
-        </View >
+        </div >
     );
 }
 

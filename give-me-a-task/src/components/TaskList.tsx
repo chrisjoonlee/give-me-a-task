@@ -8,7 +8,7 @@ import { UserContext } from "../context/UserContext.tsx";
 
 import { TaskContext } from "../context/TaskContext.tsx";
 
-import { Heading, ScrollView, Text, View, useTheme } from '@aws-amplify/ui-react';
+import { Heading, Text, useTheme } from '@aws-amplify/ui-react';
 import TaskCard from "./TaskCard.tsx";
 import { FaEnvelope as ClosedEnvelopeIcon } from "react-icons/fa";
 import { FaEnvelopeOpen as OpenEnvelopeIcon } from "react-icons/fa";
@@ -114,25 +114,19 @@ const TaskList = () => {
     }, [taskToEdit]);
 
     return (
-        <View
-            as="div"
-            backgroundColor={tokens.colors.dark}
-            className="flex flex-col items-center space-y-4 pt-3 pb-5 rounded-lg"
-        >
+        <div className="flex flex-col w-[300px] items-center space-y-4 pt-3 pb-5 rounded-lg bg-dark max-h-[calc(100vh-140px)]">
             {/* Heading */}
             <Heading level={5} color={tokens.colors.light}>
                 My Tasks
             </Heading>
 
             {/* Envelope icon */}
-            <View
-                as="div"
+            <div
                 onClick={() => setShowTasks(!showTasks)}
-                color={tokens.colors.light}
-                className="cursor-pointer"
+                className="cursor-pointer text-light"
             >
                 {showTasks ? <OpenEnvelopeIcon size={30} /> : <ClosedEnvelopeIcon size={30} />}
-            </View>
+            </div>
 
             {showTasks && tasks.length <= 0 &&
                 <Text color={tokens.colors.light}>
@@ -145,20 +139,20 @@ const TaskList = () => {
                 <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="task-list">
                         {provided => (
-                            <ScrollView
+                            <div
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
-                                width="100%"
-                                height="90%"
-                                className="flex flex-col space-y-2 px-3"
+                                className="flex flex-col space-y-2 px-3 w-full overflow-y-scroll"
                             >
                                 {
                                     tasks.map((task, index) => {
+                                        // Edit task form
                                         if (taskToEdit && taskToEdit.id === task.id) return (
                                             <EditTaskForm
                                                 key={task.id}
                                             />
                                         )
+                                        // Norml task card
                                         else return (
                                             <TaskCard
                                                 key={task.id}
@@ -169,12 +163,12 @@ const TaskList = () => {
                                     })
                                 }
                                 {provided.placeholder}
-                            </ScrollView>
+                            </div>
                         )}
                     </Droppable>
                 </DragDropContext>
             }
-        </View>
+        </div>
     );
 }
 

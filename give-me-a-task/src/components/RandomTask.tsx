@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { TaskContext } from "../context/TaskContext";
-import { Button, Text, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, Text, useTheme } from "@aws-amplify/ui-react";
 import RandomTaskCard from "./RandomTaskCard";
 
 const RandomTask = () => {
@@ -41,12 +41,8 @@ const RandomTask = () => {
     }, [tasks]);
 
     return (
-        <View
-            as="div"
-            borderRadius="8px"
-            backgroundColor={tokens.colors.dark}
-            padding="1rem"
-            className="flex flex-col items-center space-y-3"
+        <div
+            className="flex flex-col items-center space-y-3 w-[300px] rounded-lg bg-dark p-4"
         >
             <Button
                 onClick={generateRandomTask}
@@ -66,7 +62,7 @@ const RandomTask = () => {
             {currentTask === false &&
                 <Text color={tokens.colors.light}>You have no tasks!</Text>
             }
-        </View>
+        </div>
     );
 }
 

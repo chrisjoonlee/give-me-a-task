@@ -1,5 +1,5 @@
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
-import { Button, Heading, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, Heading, useTheme } from "@aws-amplify/ui-react";
 import { Outlet } from "react-router-dom";
 import { TaskContext } from '../context/TaskContext';
 import { useContext } from "react";
@@ -25,13 +25,8 @@ const Header: React.FC<HeaderProps> = ({ signOut }) => {
     return (
         <div>
             {/* Header */}
-            <View
-                as="div"
-                backgroundColor={tokens.colors.dark}
-                height="72px"
-                padding="1rem"
-                className="fixed top-0 w-screen z-50 flex items-center justify-between sm:justify-center"
-            >
+            <div className="fixed top-0 w-screen z-50 flex items-center justify-between sm:justify-center bg-dark h-[72px] p-1">
+                {/* For formatting */}
                 <div></div>
 
                 {/* Title */}
@@ -52,18 +47,14 @@ const Header: React.FC<HeaderProps> = ({ signOut }) => {
                 >
                     Sign out
                 </Button>
-            </View>
+            </div>
 
             {/* Outlet */}
-            <View
-                as="div"
-                padding="2rem"
-                marginTop="72px"
-                maxWidth="400px"
-                className="mx-auto"
+            <div
+                className="mx-auto p-4 h-[calc(100vh-72px)] pt-[72px] w-screen"
             >
                 <Outlet />
-            </View>
+            </div>
         </div >
     );
 }

@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 
-import { View, useTheme, withAuthenticator } from '@aws-amplify/ui-react';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 import '@aws-amplify/ui-react/styles.css';
 import { FetchUserAttributesOutput, fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth';
@@ -17,8 +17,6 @@ type AppProps = {
 const App: React.FC<AppProps> = ({ signOut }) => {
 
   const { setUserId } = useContext(UserContext);
-
-  const { tokens } = useTheme();
 
   // Fetch username
   const fetchCurrentUsername = async () => {
@@ -52,21 +50,12 @@ const App: React.FC<AppProps> = ({ signOut }) => {
   }, []);
 
   return (
-    // Background
-    <View
-      as="div"
-      backgroundColor={tokens.colors.medium}
-      width="100vw"
-      height="100vh"
-    >
-
-      {/* Routes */}
-      <Routes>
-        <Route element={<Header signOut={signOut} />}>
-          <Route path="/" element={<TasksPage />} />
-        </Route>
-      </Routes>
-    </View>
+    <Routes>
+      <Route element={<Header signOut={signOut} />}>
+        <Route path="/" element={<TasksPage />} />
+      </Route>
+    </Routes>
+    // </div>
   );
 };
 

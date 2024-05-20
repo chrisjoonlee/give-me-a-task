@@ -5,7 +5,7 @@ import { createTask } from "../graphql/mutations.ts";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { UserContext } from "../context/UserContext";
 import { TaskContext } from "../context/TaskContext";
-import { Heading, View, useTheme } from "@aws-amplify/ui-react";
+import { Heading, useTheme } from "@aws-amplify/ui-react";
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { IoMdAdd as AddIcon } from "react-icons/io";
@@ -63,11 +63,7 @@ const AddTaskForm = () => {
     }
 
     return (
-        <View
-            as="div"
-            backgroundColor={tokens.colors.dark}
-            className="rounded-lg p-3 space-y-3"
-        >
+        <div className="rounded-lg p-3 space-y-3 max-w-[300px] bg-dark">
             <Heading
                 level={6}
                 color={tokens.colors.light}
@@ -118,7 +114,7 @@ const AddTaskForm = () => {
                     <div>Add</div>
                 </button>
             </form>
-        </View>
+        </div>
     );
 }
 

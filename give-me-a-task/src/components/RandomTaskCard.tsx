@@ -1,4 +1,4 @@
-import { Button, Text, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, Text, useTheme } from "@aws-amplify/ui-react";
 import { DeleteTaskData, Task } from "../types.ts";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { deleteTask } from "../graphql/mutations.ts";
@@ -58,24 +58,16 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
     return (
         <>
             {taskCompleted ? (
-                <View
-                    as="div"
-                    backgroundColor={tokens.colors.medium}
-                    borderRadius="8px"
-                    className="w-full text-center py-4"
-                >
+                <div className="w-full text-center py-4 bg-medium rounded-lg">
                     <Text color={tokens.colors.light}>Great job!</Text>
-                </View>
+                </div>
             ) : (
-                <View
+                <div
                     key={task.id}
-                    as="div"
-                    backgroundColor={tokens.colors.medium}
-                    borderRadius="8px"
-                    className="relative group w-full text-center pt-3"
+                    className="relative group w-full text-center pt-3 bg-medium rounded-lg"
                 >
 
-                    <View className="px-2 pb-5">
+                    <div className="px-3 pb-5">
                         {/* Heading */}
                         <Text
                             color={tokens.colors.light}
@@ -103,7 +95,7 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                                 ))}
                             </Text>
                         }
-                    </View>
+                    </div>
 
                     {/* Complete button */}
                     <Button
@@ -113,7 +105,7 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                     >
                         Complete
                     </Button>
-                </View>
+                </div>
             )}
         </>
     );

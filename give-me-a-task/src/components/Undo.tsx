@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { CompletedTasksContext } from "../context/CompletedTasksContext";
 import { FaUndo as UndoIcon } from "react-icons/fa";
-import { Text, View, useTheme } from "@aws-amplify/ui-react";
+import { Text, useTheme } from "@aws-amplify/ui-react";
 import { TaskContext } from "../context/TaskContext";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { createTask } from "../graphql/mutations.ts";
@@ -57,12 +57,9 @@ const Undo = () => {
     }, [completedTasks]);
 
     return (
-        <View
-            as="div"
+        <div
             onClick={handleClick}
-            backgroundColor={tokens.colors.dark}
-            color={tokens.colors.light}
-            className="flex py-3 px-4 rounded-lg items-center justify-center cursor-pointer"
+            className="flex py-3 px-4 rounded-lg items-center justify-center cursor-pointer bg-dark text-light hover:bg-gray-900 transition-colors"
         >
             <UndoIcon size={18} className="mr-2" />
             <Text
@@ -71,7 +68,7 @@ const Undo = () => {
             >
                 Undo
             </Text>
-        </View>
+        </div>
     );
 }
 
