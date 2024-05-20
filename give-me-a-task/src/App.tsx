@@ -55,7 +55,6 @@ const App: React.FC<AppProps> = ({ signOut }) => {
         <Route path="/" element={<TasksPage />} />
       </Route>
     </Routes>
-    // </div>
   );
 };
 

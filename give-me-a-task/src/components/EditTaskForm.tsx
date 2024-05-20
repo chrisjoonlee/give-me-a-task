@@ -1,4 +1,3 @@
-import { useTheme } from "@aws-amplify/ui-react";
 import { useContext, useEffect, useRef } from "react";
 import { UserContext } from "../context/UserContext";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -18,7 +17,6 @@ const client = generateClient();
 
 const EditTaskForm = () => {
     const { userId } = useContext(UserContext);
-    const { tokens } = useTheme();
     const { taskToEdit, setTaskToEdit } = useContext(PopupContext);
     const { tasks, setTasks } = useContext(TaskContext);
     const formRef = useRef<HTMLDivElement>(null);
