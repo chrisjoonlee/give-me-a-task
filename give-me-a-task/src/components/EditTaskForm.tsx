@@ -13,6 +13,7 @@ import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
 type FormValues = {
     name: string
     description: string
+    dueDate?: string
 }
 
 const client = generateClient();
@@ -29,10 +30,13 @@ const EditTaskForm = () => {
     const { completedTasks, setCompletedTasks } = useContext(CompletedTasksContext);
     const formRef = useRef<HTMLDivElement>(null);
 
-    const { handleSubmit, reset, control } = useForm<FormValues>({
+    const today = new Date().toISOString().split('T')[0];
+
+    const { register, handleSubmit, reset, control } = useForm<FormValues>({
         defaultValues: {
             name: taskToEdit ? taskToEdit.name : "",
-            description: taskToEdit ? taskToEdit.description : ""
+            description: taskToEdit ? taskToEdit.description : "",
+            dueDate: taskToEdit && taskToEdit.dueDate ? taskToEdit.dueDate : ""
         }
     });
 
@@ -116,6 +120,7 @@ const EditTaskForm = () => {
                 onSubmit={handleSubmit(submitForm)}
                 className="flex flex-col justify-center space-y-4 rounded-lg"
             >
+                {/* Task input */}
                 <Controller
                     name="name"
                     control={control}
@@ -132,6 +137,7 @@ const EditTaskForm = () => {
                     )}
                 />
 
+                {/* Description input */}
                 <Controller
                     name="description"
                     control={control}
@@ -146,6 +152,21 @@ const EditTaskForm = () => {
                     )}
                 />
 
+                {/* Due date input */}
+                <div className="text-light mb-3">
+                    {/* <label htmlFor="due-date-input" className="flex flex-col text-sm">
+                        Due date (optional)
+                    </label> */}
+                    <input
+                        {...register("dueDate")}
+                        type="date"
+                        id="due-date-input"
+                        min={today}
+                        className="bg-medium border border-light px-2 rounded-lg w-full cursor-pointer"
+                    />
+                </div>
+
+                {/* Buttons */}
                 <div className="grid grid-cols-2 gap-4">
                     <button
                         className="bg-light rounded-lg flex items-center justify-center text-dark font-bold"
@@ -160,6 +181,7 @@ const EditTaskForm = () => {
                         Save
                     </button>
                 </div>
+
             </form>
         </div >
     );
