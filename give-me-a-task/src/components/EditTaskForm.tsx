@@ -7,6 +7,8 @@ import { updateTask } from "../graphql/mutations.ts";
 import { UpdateTaskData } from "../types";
 import { TaskContext } from "../context/TaskContext";
 import TextareaAutosize from 'react-textarea-autosize';
+import { deleteTask } from "../functions.ts";
+import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
 
 type FormValues = {
     name: string
@@ -21,8 +23,10 @@ const EditTaskForm = () => {
     const {
         tasksByIndex, setTasksByIndex,
         tasksByDueDate, setTasksByDueDate,
-        currentTask, setCurrentTask
+        currentTask, setCurrentTask,
+        setTaskCompleted,
     } = useContext(TaskContext);
+    const { completedTasks, setCompletedTasks } = useContext(CompletedTasksContext);
     const formRef = useRef<HTMLDivElement>(null);
 
     const { handleSubmit, reset, control } = useForm<FormValues>({
@@ -68,6 +72,23 @@ const EditTaskForm = () => {
         }
     }
 
+    const handleComplete = async () => {
+        if (taskToEdit) {
+            deleteTask(taskToEdit)
+                .then(deletedTask => {
+                    if (deletedTask) {
+                        // Update local state
+                        setTasksByIndex(tasksByIndex.filter(task => task.id !== deletedTask.id));
+                        setTasksByDueDate(tasksByDueDate.filter(task => task.id !== deletedTask.id));
+                        setTaskCompleted(true);
+
+                        // Add to completed tasks list
+                        setCompletedTasks([...completedTasks, deletedTask]);
+                    }
+                });
+        }
+    }
+
     const handleClickOutside = (event: MouseEvent) => {
         if (formRef.current && !formRef.current.contains(event.target as Node)) {
             setTaskToEdit(null);
@@ -88,7 +109,7 @@ const EditTaskForm = () => {
     return (
         <div
             ref={formRef}
-            className="rounded-lg relative bg-medium px-4 py-3"
+            className="rounded-lg bg-medium px-4 py-3"
         >
             {/* EDIT TASK FORM */}
             <form
@@ -125,12 +146,20 @@ const EditTaskForm = () => {
                     )}
                 />
 
-                <button
-                    type="submit"
-                    className="border border-light bg-medium rounded-lg flex items-center justify-center"
-                >
-                    Save
-                </button>
+                <div className="grid grid-cols-2 gap-4">
+                    <button
+                        className="bg-light rounded-lg flex items-center justify-center text-dark font-bold"
+                        onClick={handleComplete}
+                    >
+                        Complete
+                    </button>
+                    <button
+                        type="submit"
+                        className="border border-light bg-medium rounded-lg flex items-center justify-center"
+                    >
+                        Save
+                    </button>
+                </div>
             </form>
         </div >
     );

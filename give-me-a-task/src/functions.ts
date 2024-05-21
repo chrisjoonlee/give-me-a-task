@@ -1,6 +1,7 @@
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { SearchTasksData, Task } from "./types";
+import { DeleteTaskData, SearchTasksData, Task } from "./types";
 import { searchTasks } from './graphql/queries.ts';
+import { deleteTask as deleteTaskQuery } from "./graphql/mutations.ts";
 
 const client = generateClient();
 
@@ -38,6 +39,27 @@ export const fetchTasks = async (userId: string, sortType: string): Promise<Task
     } catch (error) {
         console.log('Error fetching tasks:', error);
         return null;
+    }
+}
+
+export const deleteTask = async (task: Task) => {
+    try {
+        // Delete record in DynamoDB
+        const result = await client.graphql({
+            query: deleteTaskQuery,
+            variables: {
+                input: {
+                    id: task.id
+                }
+            }
+        }) as GraphQLResult<DeleteTaskData>;
+
+        const deletedTask = result.data.deleteTask;
+        console.log("Successfully deleted task:", deletedTask);
+        return deletedTask
+    }
+    catch (error) {
+        console.log("Error deleting task:", error);
     }
 }
 

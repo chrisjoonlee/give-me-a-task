@@ -71,7 +71,7 @@ const Undo = () => {
                 color={tokens.colors.light}
                 className="font-semibold"
             >
-                Undo
+                Restore task
             </Text>
         </div>
     );

@@ -10,7 +10,7 @@ import { useContext, useEffect } from 'react';
 import { UserContext } from './context/UserContext';
 import Header from './components/Header';
 import { TaskContext } from './context/TaskContext';
-import { fetchTasks, fetchTasksByIndex } from './functions';
+import { fetchTasks } from './functions';
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]; //() => void;
@@ -19,11 +19,7 @@ type AppProps = {
 const App: React.FC<AppProps> = ({ signOut }) => {
 
   const { userId, setUserId } = useContext(UserContext);
-  const {
-    tasksByIndex, setTasksByIndex,
-    tasksByDueDate, setTasksByDueDate,
-    sortType, setSortType
-  } = useContext(TaskContext);
+  const { setTasksByIndex, setTasksByDueDate } = useContext(TaskContext);
 
   // Fetch username
   const fetchCurrentUsername = async () => {

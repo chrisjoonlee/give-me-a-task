@@ -1,11 +1,10 @@
 import { Task } from "../types.ts";
 import { HiOutlineMenuAlt2 as ExpandIcon } from "react-icons/hi";
 import React, { useContext, useState } from "react";
-import { MdEdit as EditIcon } from "react-icons/md";
-import { PopupContext } from "../context/PopupContext";
 import { Draggable } from "@hello-pangea/dnd";
 import { TaskContext } from "../context/TaskContext.tsx";
 import DueDateBadge from "./DueDateBadge.tsx";
+import EditButton from "./EditButton.tsx";
 
 type TaskCardProps = {
     index: number;
@@ -14,7 +13,6 @@ type TaskCardProps = {
 
 const TaskCard = ({ index, task }: TaskCardProps) => {
     const [open, setOpen] = useState<boolean>(false);
-    const { setTaskToEdit } = useContext(PopupContext);
     const { sortType } = useContext(TaskContext);
 
     const handleClick = () => {
@@ -25,13 +23,7 @@ const TaskCard = ({ index, task }: TaskCardProps) => {
 
     const content = <>
         {/* Edit icon */}
-        <div
-            onClick={() => setTaskToEdit(task)}
-            className="absolute right-2 hidden transition-colors p-1 rounded-full cursor-pointer text-light
-                group-hover:block hover:bg-gray-700"
-        >
-            <EditIcon size={16} />
-        </div>
+        <EditButton task={task} />
 
         {/* Heading */}
         <div className={`text-light break-words ${open && 'font-bold'}`}>
@@ -87,7 +79,7 @@ const TaskCard = ({ index, task }: TaskCardProps) => {
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                     key={task.id}
-                    className={`relative group bg-medium pl-4 pr-2 py-2 rounded-lg
+                    className={`group bg-medium pl-4 pr-2 py-2 rounded-lg relative
                         ${task.description && 'cursor-pointer'}`}
                     onClick={handleClick}
                 >
@@ -101,7 +93,7 @@ const TaskCard = ({ index, task }: TaskCardProps) => {
     else return (
         <div
             key={task.id}
-            className={`relative group bg-medium pl-4 pr-2 py-2 rounded-lg
+            className={`group bg-medium pl-4 pr-2 py-2 rounded-lg relative
                         ${task.description && 'cursor-pointer'}`}
             onClick={handleClick}
         >

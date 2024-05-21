@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ signOut }) => {
     return (
         <div>
             {/* Header */}
-            <div className="fixed top-0 w-screen z-50 flex items-center justify-between sm:justify-center bg-dark h-[72px] p-1">
+            <div className="fixed top-0 w-screen flex items-center justify-between sm:justify-center bg-dark h-[72px] p-1">
                 {/* For formatting */}
                 <div></div>
 

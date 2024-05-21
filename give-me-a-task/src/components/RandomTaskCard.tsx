@@ -1,14 +1,11 @@
 import { Button, Text, useTheme } from "@aws-amplify/ui-react";
-import { DeleteTaskData, Task } from "../types.ts";
-import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { deleteTask } from "../graphql/mutations.ts";
+import { Task } from "../types.ts";
 import { TaskContext } from "../context/TaskContext";
 import React, { useContext, useEffect } from "react";
 import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
 import './animations.css';
 import DueDateBadge from "./DueDateBadge.tsx";
-
-const client = generateClient();
+import { deleteTask } from "../functions.ts";
 
 type RandomTaskCardProps = {
     task: Task
@@ -21,35 +18,21 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
         tasksByDueDate, setTasksByDueDate,
         taskCompleted, setTaskCompleted
     } = useContext(TaskContext);
-    // const [completed, setCompleted] = useState(false);
     const { completedTasks, setCompletedTasks } = useContext(CompletedTasksContext);
 
     const handleComplete = async () => {
-        try {
-            // Delete record in DynamoDB
-            const result = await client.graphql({
-                query: deleteTask,
-                variables: {
-                    input: {
-                        id: task.id
-                    }
+        deleteTask(task)
+            .then(deletedTask => {
+                if (deletedTask) {
+                    // Update local state
+                    setTasksByIndex(tasksByIndex.filter(task => task.id !== deletedTask.id));
+                    setTasksByDueDate(tasksByDueDate.filter(task => task.id !== deletedTask.id));
+                    setTaskCompleted(true);
+
+                    // Add to completed tasks list
+                    setCompletedTasks([...completedTasks, deletedTask]);
                 }
-            }) as GraphQLResult<DeleteTaskData>;
-
-            const deletedTask = result.data.deleteTask;
-            console.log("Successfully deleted task:", deletedTask);
-
-            // Update local state
-            setTasksByIndex(tasksByIndex.filter(task => task.id !== deletedTask.id));
-            setTasksByDueDate(tasksByDueDate.filter(task => task.id !== deletedTask.id));
-            setTaskCompleted(true);
-
-            // Add to completed tasks list
-            setCompletedTasks([...completedTasks, deletedTask]);
-        }
-        catch (error) {
-            console.log("Error deleting task:", error);
-        }
+            });
     }
 
     useEffect(() => {
@@ -75,7 +58,7 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                 // NORMAL TASK CARD
                 <div
                     key={task.id}
-                    className="relative group w-full text-center pt-3 bg-medium rounded-lg"
+                    className="group w-full text-center pt-3 bg-medium rounded-lg"
                 >
 
                     <div className="px-3 pb-5">
