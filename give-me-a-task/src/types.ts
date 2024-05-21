@@ -2,6 +2,7 @@ export type Task = {
     id: string;
     createdAt: string;
     description?: string;
+    dueDate?: string;
     index: number;
     name: string;
     updatedAt?: string;
@@ -13,6 +14,7 @@ export type CreateTaskInput = {
     createdAt?: string;
     name: string;
     description?: string;
+    dueDate?: string;
     index: number;
     userId: string;
 }

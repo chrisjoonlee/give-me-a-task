@@ -16,6 +16,7 @@ const client = generateClient();
 type FormValues = {
     name: string
     description: string
+    dueDate?: string
 }
 
 const AddTaskForm = () => {
@@ -25,7 +26,9 @@ const AddTaskForm = () => {
     const { tokens } = useTheme();
     const [animate, setAnimate] = useState(false);
 
-    const { handleSubmit, reset, control } = useForm({
+    const today = new Date().toISOString().split('T')[0];
+
+    const { register, handleSubmit, reset, control } = useForm<FormValues>({
         defaultValues: {
             name: "",
             description: ""
@@ -81,8 +84,9 @@ const AddTaskForm = () => {
 
             <form
                 onSubmit={handleSubmit(submitForm)}
-                className="flex flex-col justify-center space-y-1"
+                className="flex flex-col justify-center"
             >
+                {/* Name input */}
                 <Controller
                     name="name"
                     control={control}
@@ -94,11 +98,12 @@ const AddTaskForm = () => {
                             minRows={1}
                             maxRows={15}
                             placeholder="Task"
-                            className="border border-light rounded-lg px-4 py-3"
+                            className="border border-light rounded-lg px-4 py-3 mb-1"
                         />
                     )}
                 />
 
+                {/* Description input */}
                 <Controller
                     name="description"
                     control={control}
@@ -108,11 +113,26 @@ const AddTaskForm = () => {
                             minRows={3}
                             maxRows={15}
                             placeholder="Description (optional)"
-                            className="border border-light rounded-lg px-4 py-3"
+                            className="border border-light rounded-lg px-4 py-3 mb-3"
                         />
                     )}
                 />
 
+                {/* Due date input */}
+                <div className="text-light mb-3">
+                    <label htmlFor="due-date-input" className="flex flex-col text-sm">
+                        Due date (optional)
+                    </label>
+                    <input
+                        {...register("dueDate")}
+                        type="date"
+                        id="due-date-input"
+                        min={today}
+                        className="px-3 py-1 border border-light rounded-lg w-full cursor-pointer"
+                    />
+                </div>
+
+                {/* Submit button */}
                 <button
                     type="submit"
                     className="border border-light bg-dark rounded-lg px-4 py-3 flex items-center justify-center"
@@ -126,14 +146,14 @@ const AddTaskForm = () => {
     return (
         <>
             {/* Small screen animation */}
-            <div className={`rounded-lg p-3 space-y-3 max-w-[300px] bg-dark
+            <div className={`rounded-lg p-3 space-y-3 max-w-[400px] bg-dark
             sm:hidden
             ${animate && 'animate-slide-task-up'}`}>
                 {contents}
             </div>
 
             {/* Large screen animation */}
-            <div className={`hidden rounded-lg p-3 space-y-3 max-w-[300px] bg-dark
+            <div className={`hidden rounded-lg p-3 space-y-3 max-w-[400px] bg-dark
             sm:block
             ${animate && 'animate-slide-task-left'}`}>
                 {contents}

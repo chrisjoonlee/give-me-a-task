@@ -15,6 +15,7 @@ import { FaEnvelopeOpen as OpenEnvelopeIcon } from "react-icons/fa";
 import { PopupContext } from "../context/PopupContext.tsx";
 import EditTaskForm from "./EditTaskForm.tsx";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
+import TaskFilter from "./TaskFilter.tsx";
 
 
 const client = generateClient();
@@ -114,7 +115,7 @@ const TaskList = () => {
     }, [taskToEdit]);
 
     return (
-        <div className="flex flex-col w-[300px] items-center space-y-4 pt-3 pb-5 rounded-lg bg-dark max-h-[calc(100vh-140px)]">
+        <div className="flex flex-col w-[300px] items-center space-y-4 pt-3 pb-5 rounded-lg bg-dark max-h-[calc(100vh-140px)] relative">
             {/* Heading */}
             <Heading level={5} color={tokens.colors.light}>
                 My Tasks
@@ -129,6 +130,10 @@ const TaskList = () => {
                 {showTasks ? <OpenEnvelopeIcon size={30} /> : <ClosedEnvelopeIcon size={30} />}
             </div>
 
+            {/* Task filter */}
+            {showTasks && <TaskFilter />}
+
+            {/* If there are no tasks: Message */}
             {showTasks && tasks.length <= 0 &&
                 <Text color={tokens.colors.light}>
                     You have no tasks!

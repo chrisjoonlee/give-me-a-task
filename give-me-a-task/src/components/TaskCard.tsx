@@ -1,4 +1,4 @@
-import { Text, View, useTheme } from "@aws-amplify/ui-react";
+import { Text, useTheme } from "@aws-amplify/ui-react";
 import { Task } from "../types.ts";
 import { HiOutlineMenuAlt2 as ExpandIcon } from "react-icons/hi";
 import React, { useContext, useState } from "react";
@@ -23,30 +23,31 @@ const TaskCard = ({ index, task }: TaskCardProps) => {
         }
     }
 
+    const formatDate = (dateStr: string): string => {
+        const date = new Date(dateStr);
+        const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+        return date.toLocaleDateString(undefined, options);
+    };
+
     return (
         <Draggable draggableId={task.id} index={index}>
             {provided => (
-                <View
+                <div
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                     key={task.id}
-                    as="div"
-                    backgroundColor={tokens.colors.medium}
-                    padding="0.5rem 1rem"
-                    borderRadius="8px"
-                    className={`relative group ${task.description && 'cursor-pointer'}`}
+                    className={`relative group bg-medium px-4 py-2 rounded-lg
+                        ${task.description && 'cursor-pointer'}`}
                     onClick={handleClick}
                 >
                     {/* Edit icon */}
-                    <View
-                        as="div"
-                        color={tokens.colors.light}
+                    <div
                         onClick={() => setTaskToEdit(task)}
-                        className={`absolute right-2 hidden group-hover:block hover:bg-gray-700 transition-colors p-1 rounded-full cursor-pointer`}
+                        className={`absolute right-2 hidden group-hover:block hover:bg-gray-700 transition-colors p-1 rounded-full cursor-pointer text-light`}
                     >
                         <EditIcon size={16} />
-                    </View>
+                    </div>
 
                     {/* Heading */}
                     <Text
@@ -77,16 +78,27 @@ const TaskCard = ({ index, task }: TaskCardProps) => {
                         </Text>
                     }
 
-                    {/* Expand icon */}
-                    {!open && task.description &&
-                        <View
-                            as="div"
-                            color={tokens.colors.light}
-                        >
-                            <ExpandIcon size={14} className="mt-1" />
-                        </View>
+                    {/* ICONS */}
+                    {(task.description || task.dueDate) &&
+                        <div className="flex justify-between mt-2">
+
+                            {/* Expand icon */}
+
+                            <div className="text-light">
+                                {!open && task.description &&
+                                    <ExpandIcon size={14} />
+                                }
+                            </div>
+
+                            {/* DUe date icon */}
+                            {task.dueDate &&
+                                <div className="text-light text-xs">
+                                    Due {formatDate(task.dueDate)}
+                                </div>
+                            }
+                        </div>
                     }
-                </View>
+                </div>
             )
             }
 

@@ -22,6 +22,7 @@ export const searchTasks = /* GraphQL */ `
         id
         createdAt
         description
+        dueDate
         index
         name
         userId
@@ -56,6 +57,7 @@ export const getTask = /* GraphQL */ `
       id
       createdAt
       description
+      dueDate
       index
       name
       userId
@@ -75,6 +77,7 @@ export const listTasks = /* GraphQL */ `
         id
         createdAt
         description
+        dueDate
         index
         name
         userId
