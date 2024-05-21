@@ -1,10 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { SearchTasksData, Task, UpdateTaskData } from "../types";
+import { Task, UpdateTaskData } from "../types";
 
-import { searchTasks } from '../graphql/queries.ts';
 import { updateTask } from '../graphql/mutations.ts';
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { UserContext } from "../context/UserContext.tsx";
 
 import { TaskContext } from "../context/TaskContext.tsx";
 
@@ -17,41 +15,15 @@ import EditTaskForm from "./EditTaskForm.tsx";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
 import TaskFilter from "./TaskFilter.tsx";
 
-
 const client = generateClient();
 
 const TaskList = () => {
-    const { userId } = useContext(UserContext);
-    const { tasks, setTasks } = useContext(TaskContext);
+    const { tasksByIndex, tasksByDueDate, sortType } = useContext(TaskContext);
+    const [tasks, setTasks] = useState<Task[]>([]);
     const [showTasks, setShowTasks] = useState(false);
     const { taskToEdit } = useContext(PopupContext);
 
     const { tokens } = useTheme();
-
-    const fetchTasks = async () => {
-        try {
-            // Send request to DynamoDB
-            const taskData = await client.graphql({
-                query: searchTasks,
-                variables: {
-                    filter: {
-                        userId: { eq: userId }
-                    },
-                    sort: {
-                        direction: "asc",
-                        field: "index"
-                    }
-                }
-            }) as GraphQLResult<SearchTasksData>;
-
-            const tasks = taskData.data.searchTasks.items;
-
-            console.log("Task list:", tasks);
-            setTasks(tasks);
-        } catch (error) {
-            console.log('Error fetching tasks:', error);
-        }
-    }
 
     const updateTaskIndex = async (task: Task, index: number) => {
         try {
@@ -103,12 +75,19 @@ const TaskList = () => {
     }
 
     useEffect(() => {
-        if (userId) {
-            console.log("TaskList.tsx, user ID:", userId);
-            fetchTasks();
+        console.log("Sort type:", sortType);
+
+        if (tasksByIndex && tasksByDueDate) {
+            console.log("Goal");
+
+            if (sortType === "dueDate") {
+                setTasks(tasksByDueDate);
+            }
+            else {
+                setTasks(tasksByIndex);
+            }
         }
-        else console.log("TaskList.tsx: No user ID");
-    }, [userId]);
+    }, [tasksByIndex, tasksByDueDate, sortType]);
 
     useEffect(() => {
         console.log("Task to edit:", taskToEdit);

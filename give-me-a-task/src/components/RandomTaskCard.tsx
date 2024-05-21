@@ -6,6 +6,7 @@ import { TaskContext } from "../context/TaskContext";
 import React, { useContext, useEffect } from "react";
 import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
 import './animations.css';
+import DueDateBadge from "./DueDateBadge.tsx";
 
 const client = generateClient();
 
@@ -16,7 +17,8 @@ type RandomTaskCardProps = {
 const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
     const { tokens } = useTheme();
     const {
-        tasks, setTasks,
+        tasksByIndex, setTasksByIndex,
+        tasksByDueDate, setTasksByDueDate,
         taskCompleted, setTaskCompleted
     } = useContext(TaskContext);
     // const [completed, setCompleted] = useState(false);
@@ -37,7 +39,9 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
             const deletedTask = result.data.deleteTask;
             console.log("Successfully deleted task:", deletedTask);
 
-            setTasks(tasks.filter(task => task.id !== deletedTask.id));
+            // Update local state
+            setTasksByIndex(tasksByIndex.filter(task => task.id !== deletedTask.id));
+            setTasksByDueDate(tasksByDueDate.filter(task => task.id !== deletedTask.id));
             setTaskCompleted(true);
 
             // Add to completed tasks list
@@ -76,23 +80,19 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
 
                     <div className="px-3 pb-5">
                         {/* Heading */}
-                        <Text
-                            color={tokens.colors.light}
-                            className="font-bold"
-                        >
+                        <div className="font-bold text-light break-words">
                             {task.name.split('\n').map((line, index) => (
                                 <React.Fragment key={index}>
                                     {line}
                                     <br />
                                 </React.Fragment>
                             ))}
-                        </Text>
+                        </div>
 
                         {/* Description */}
                         {task.description &&
-                            <Text
-                                color={tokens.colors.light}
-                                marginTop="0.8rem"
+                            <div
+                                className="text-light mt-3 break-words"
                             >
                                 {task.description.split('\n').map((line, index) => (
                                     <React.Fragment key={index}>
@@ -100,7 +100,14 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                                         <br />
                                     </React.Fragment>
                                 ))}
-                            </Text>
+                            </div>
+                        }
+
+                        {/* Due date badge */}
+                        {task.dueDate &&
+                            <div className="flex justify-center mt-3">
+                                <DueDateBadge date={task.dueDate} />
+                            </div>
                         }
                     </div>
 

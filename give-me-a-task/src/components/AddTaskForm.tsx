@@ -21,7 +21,10 @@ type FormValues = {
 
 const AddTaskForm = () => {
     const { userId } = useContext(UserContext);
-    const { tasks, setTasks } = useContext(TaskContext);
+    const {
+        tasksByIndex, setTasksByIndex,
+        tasksByDueDate, setTasksByDueDate
+    } = useContext(TaskContext);
 
     const { tokens } = useTheme();
     const [animate, setAnimate] = useState(false);
@@ -46,7 +49,7 @@ const AddTaskForm = () => {
             const task = {
                 ...formData,
                 userId,
-                index: tasks.length > 0 ? tasks[tasks.length - 1].index + 1 : 0
+                index: tasksByIndex.length > 0 ? tasksByIndex[tasksByIndex.length - 1].index + 1 : 0
             };
 
             reset();
@@ -63,7 +66,8 @@ const AddTaskForm = () => {
 
             // Update local state
             const addedTask = result.data.createTask;
-            setTasks([...tasks, addedTask]);
+            setTasksByIndex([...tasksByIndex, addedTask]);
+            setTasksByDueDate([...tasksByDueDate, addedTask]);
 
             console.log("Task added successfully:", addedTask);
         }

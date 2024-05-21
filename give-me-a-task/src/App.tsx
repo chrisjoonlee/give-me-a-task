@@ -9,6 +9,8 @@ import TasksPage from './components/TasksPage';
 import { useContext, useEffect } from 'react';
 import { UserContext } from './context/UserContext';
 import Header from './components/Header';
+import { TaskContext } from './context/TaskContext';
+import { fetchTasks, fetchTasksByIndex } from './functions';
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]; //() => void;
@@ -16,7 +18,12 @@ type AppProps = {
 
 const App: React.FC<AppProps> = ({ signOut }) => {
 
-  const { setUserId } = useContext(UserContext);
+  const { userId, setUserId } = useContext(UserContext);
+  const {
+    tasksByIndex, setTasksByIndex,
+    tasksByDueDate, setTasksByDueDate,
+    sortType, setSortType
+  } = useContext(TaskContext);
 
   // Fetch username
   const fetchCurrentUsername = async () => {
@@ -44,10 +51,29 @@ const App: React.FC<AppProps> = ({ signOut }) => {
     }
   }
 
+  // Fetch user info
   useEffect(() => {
     fetchCurrentUsername();
     getUserAttributes();
   }, []);
+
+  // Fetch tasks
+  useEffect(() => {
+    if (userId) {
+      // Fetch tasks by index
+      fetchTasks(userId, "index")
+        .then(res => {
+          if (res) setTasksByIndex(res);
+        });
+
+      // Fetch tasks by due date
+      fetchTasks(userId, "dueDate")
+        .then(res => {
+          if (res) setTasksByDueDate(res);
+        });
+    }
+    else console.log("TaskList.tsx: No user ID");
+  }, [userId]);
 
   return (
     <Routes>

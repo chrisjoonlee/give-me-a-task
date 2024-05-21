@@ -11,7 +11,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ signOut }) => {
     const { setUserId } = useContext(UserContext);
-    const { setTasks } = useContext(TaskContext);
+    const { setTasksByIndex, setTasksByDueDate } = useContext(TaskContext);
 
     const { tokens } = useTheme();
 
@@ -19,7 +19,8 @@ const Header: React.FC<HeaderProps> = ({ signOut }) => {
         if (signOut) signOut();
 
         setUserId("");
-        setTasks([]);
+        setTasksByIndex([]);
+        setTasksByDueDate([]);
     }
 
     return (

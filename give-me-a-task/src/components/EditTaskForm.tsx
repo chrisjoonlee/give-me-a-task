@@ -18,7 +18,11 @@ const client = generateClient();
 const EditTaskForm = () => {
     const { userId } = useContext(UserContext);
     const { taskToEdit, setTaskToEdit } = useContext(PopupContext);
-    const { tasks, setTasks } = useContext(TaskContext);
+    const {
+        tasksByIndex, setTasksByIndex,
+        tasksByDueDate, setTasksByDueDate,
+        currentTask, setCurrentTask
+    } = useContext(TaskContext);
     const formRef = useRef<HTMLDivElement>(null);
 
     const { handleSubmit, reset, control } = useForm<FormValues>({
@@ -50,7 +54,11 @@ const EditTaskForm = () => {
 
                 // Update local state
                 const updatedTask = result.data.updateTask;
-                setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task));
+                setTasksByIndex(tasksByIndex.map(task => task.id === updatedTask.id ? updatedTask : task));
+                setTasksByDueDate(tasksByDueDate.map(task => task.id === updatedTask.id ? updatedTask : task));
+                if (currentTask && currentTask !== true && currentTask.index === taskToEdit.index) {
+                    setCurrentTask(updatedTask);
+                }
 
                 console.log("Task updated successfully:", updatedTask);
             }
@@ -82,11 +90,6 @@ const EditTaskForm = () => {
             ref={formRef}
             className="rounded-lg relative bg-medium px-4 py-3"
         >
-            {/* COMPLETE BUTTON */}
-            <button className="absolute bg-red-600 top-0 -right-12">
-                Complete
-            </button>
-
             {/* EDIT TASK FORM */}
             <form
                 onSubmit={handleSubmit(submitForm)}
@@ -103,7 +106,7 @@ const EditTaskForm = () => {
                             minRows={1}
                             maxRows={15}
                             placeholder="Task"
-                            className="text-light bg-medium"
+                            className="text-light bg-medium resize-none"
                         />
                     )}
                 />
@@ -117,7 +120,7 @@ const EditTaskForm = () => {
                             minRows={3}
                             maxRows={15}
                             placeholder="Description (optional)"
-                            className="text-light bg-medium"
+                            className="text-light bg-medium resize-none"
                         />
                     )}
                 />

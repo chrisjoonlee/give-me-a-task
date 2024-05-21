@@ -10,7 +10,11 @@ import { CreateTaskData } from "../types.ts";
 const client = generateClient();
 
 const Undo = () => {
-    const { tasks, setTasks, setCurrentTask, setTaskCompleted } = useContext(TaskContext);
+    const {
+        tasksByIndex, setTasksByIndex,
+        tasksByDueDate, setTasksByDueDate,
+        setCurrentTask, setTaskCompleted
+    } = useContext(TaskContext);
     const { completedTasks, setCompletedTasks } = useContext(CompletedTasksContext);
     const { tokens } = useTheme();
 
@@ -22,7 +26,8 @@ const Undo = () => {
                 setCompletedTasks(completedTasks.slice(0, completedTasks.length - 1));
 
                 // Update local state
-                setTasks([...tasks, lastTask]);
+                setTasksByIndex([...tasksByIndex, lastTask]);
+                setTasksByDueDate([...tasksByDueDate, lastTask]);
                 setCurrentTask(lastTask);
                 setTaskCompleted(false);
 
