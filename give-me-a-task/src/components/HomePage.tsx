@@ -7,6 +7,7 @@ const HomePage = () => {
         <div className="-mt-4">
             <Tabs
                 spacing="relative"
+                defaultValue="daily"
                 items={[
                     { label: "Daily", value: "daily", content: <DailyPage /> },
                     { label: "My Tasks", value: "myTasks", content: <TasksPage /> }

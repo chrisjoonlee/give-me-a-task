@@ -1,11 +1,12 @@
 import { Button, Text, useTheme } from "@aws-amplify/ui-react";
 import { Task } from "../../types.ts";
 import { TaskContext } from "../../context/TaskContext.tsx";
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { CompletedTasksContext } from "../../context/CompletedTasksContext.tsx";
 import '../animations.css';
 import DueDateBadge from "./DueDateBadge.tsx";
 import { deleteTask } from "../../functions.ts";
+import FormattedText from "../FormattedText.tsx";
 
 type RandomTaskCardProps = {
     task: Task
@@ -63,27 +64,17 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
 
                     <div className="px-3 pb-5">
                         {/* Heading */}
-                        <div className="font-bold text-light break-words">
-                            {task.name.split('\n').map((line, index) => (
-                                <React.Fragment key={index}>
-                                    {line}
-                                    <br />
-                                </React.Fragment>
-                            ))}
-                        </div>
+                        <FormattedText
+                            text={task.name}
+                            classNames="font-bold text-light"
+                        />
 
                         {/* Description */}
                         {task.description &&
-                            <div
-                                className="text-light mt-3 break-words"
-                            >
-                                {task.description.split('\n').map((line, index) => (
-                                    <React.Fragment key={index}>
-                                        {line}
-                                        <br />
-                                    </React.Fragment>
-                                ))}
-                            </div>
+                            <FormattedText
+                                text={task.description}
+                                classNames="text-light mt-3"
+                            />
                         }
 
                         {/* Due date badge */}

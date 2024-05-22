@@ -1,32 +1,21 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { TaskContext } from "../../context/TaskContext";
 import { Button, Text, useTheme } from "@aws-amplify/ui-react";
-import RandomTaskCard from "../TaskPageComponents/RandomTaskCard";
+import NextTaskCard from "./NextTaskCard";
 
 const NextTask = () => {
     const {
         tasksByIndex, tasksByDueDate,
         currentTask, setCurrentTask,
-        setTaskCompleted,
         dailyTasks,
-        currentDailyTask, setCurrentDailyTask
+        currentDailyTaskIndex, setCurrentDailyTaskIndex
     } = useContext(TaskContext);
-    const [currentIndex, setCurrentIndex] = useState<number>(-1);
-    // const [randomTask, setRandomTask] = useState<Task | boolean | null>(null);
 
     const { tokens } = useTheme();
 
-    const getNextTask = () => {
-        let index = 0;
-        if (currentDailyTask && currentDailyTask !== true) {
-            index = currentDailyTask.index + 1;
-        }
-        if (index > dailyTasks.length - 1) index = -1;
-
-        if (index >= 0) {
-            setCurrentDailyTask(dailyTasks[index]);
-        }
-        else setCurrentDailyTask(false);
+    const handleStartDay = () => {
+        if (dailyTasks.length) setCurrentDailyTaskIndex(0);
+        window.localStorage.setItem("currentDailyTaskIndex", "0");
     }
 
     useEffect(() => {
@@ -40,21 +29,21 @@ const NextTask = () => {
         >
             {/* Button */}
             <Button
-                onClick={getNextTask}
+                onClick={handleStartDay}
                 backgroundColor={tokens.colors.dark}
                 color={tokens.colors.light}
                 borderRadius="8px"
             >
-                {currentDailyTask ? 'Next' : 'Start my day'}
+                {currentDailyTaskIndex >= 0 ? 'Restart' : 'Start my day'}
             </Button>
 
             {/* Show random task */}
-            {currentDailyTask && currentDailyTask !== true &&
-                <RandomTaskCard task={currentDailyTask} />
+            {currentDailyTaskIndex >= 0 &&
+                <NextTaskCard task={dailyTasks[currentDailyTaskIndex]} />
             }
 
             {/* If there are no tasks */}
-            {currentDailyTask === false &&
+            {currentDailyTaskIndex < 0 &&
                 <Text color={tokens.colors.light}>
                     You have no tasks!
                 </Text>

@@ -16,8 +16,8 @@ export type TaskContextType = {
     setSortType: StateSetter<string>;
     dailyTasks: Task[];
     setDailyTasks: StateSetter<Task[]>;
-    currentDailyTask: Task | boolean | null;
-    setCurrentDailyTask: StateSetter<Task | boolean | null>;
+    currentDailyTaskIndex: number;
+    setCurrentDailyTaskIndex: StateSetter<number>;
 }
 
 const TaskContext = createContext<TaskContextType>({
@@ -33,8 +33,8 @@ const TaskContext = createContext<TaskContextType>({
     setSortType: () => { },
     dailyTasks: [],
     setDailyTasks: () => { },
-    currentDailyTask: null,
-    setCurrentDailyTask: () => { }
+    currentDailyTaskIndex: -1,
+    setCurrentDailyTaskIndex: () => { }
 });
 
 type TaskContextProviderProps = {
@@ -52,7 +52,7 @@ const TaskProvider = ({ children }: TaskContextProviderProps) => {
     const [taskCompleted, setTaskCompleted] = useState<boolean>(false);
     const [sortType, setSortType] = useState<string>("");
     const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
-    const [currentDailyTask, setCurrentDailyTask] = useState<Task | boolean | null>(null);
+    const [currentDailyTaskIndex, setCurrentDailyTaskIndex] = useState<number>(-1);
 
     return (
         <TaskContext.Provider value={{
@@ -62,7 +62,7 @@ const TaskProvider = ({ children }: TaskContextProviderProps) => {
             taskCompleted, setTaskCompleted,
             sortType, setSortType,
             dailyTasks, setDailyTasks,
-            currentDailyTask, setCurrentDailyTask
+            currentDailyTaskIndex, setCurrentDailyTaskIndex
         }}>
             {children}
         </TaskContext.Provider>

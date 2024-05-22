@@ -19,7 +19,10 @@ type AppProps = {
 const App: React.FC<AppProps> = ({ signOut }) => {
 
   const { userId, setUserId } = useContext(UserContext);
-  const { setTasksByIndex, setTasksByDueDate, setDailyTasks } = useContext(TaskContext);
+  const {
+    setTasksByIndex, setTasksByDueDate,
+    dailyTasks, setDailyTasks,
+    setCurrentDailyTaskIndex } = useContext(TaskContext);
 
   // Fetch username
   const fetchCurrentUsername = async () => {
@@ -76,6 +79,16 @@ const App: React.FC<AppProps> = ({ signOut }) => {
     }
     else console.log("TaskList.tsx: No user ID");
   }, [userId]);
+
+  useEffect(() => {
+    // Get current daily task index
+    if (dailyTasks.length) {
+      const currentIndex = window.localStorage.getItem("currentDailyTaskIndex");
+      if (currentIndex) setCurrentDailyTaskIndex(JSON.parse(currentIndex));
+      else setCurrentDailyTaskIndex(-1);
+    }
+    else setCurrentDailyTaskIndex(-1);
+  }, [dailyTasks]);
 
   return (
     <Routes>
