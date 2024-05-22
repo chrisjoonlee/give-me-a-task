@@ -248,6 +248,7 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
             if (!task.dueDate) delete task.dueDate;
 
             reset();
+            setDescription("");
 
             console.log("Task to add:", task);
 
@@ -281,6 +282,7 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
             }
 
             reset();
+            setDescription("");
 
             console.log("Daily task to add:", task);
 
