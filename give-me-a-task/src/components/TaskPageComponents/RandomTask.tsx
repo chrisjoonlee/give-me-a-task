@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { TaskContext } from "../context/TaskContext";
+import { TaskContext } from "../../context/TaskContext";
 import { Button, Text, useTheme } from "@aws-amplify/ui-react";
 import RandomTaskCard from "./RandomTaskCard";
 

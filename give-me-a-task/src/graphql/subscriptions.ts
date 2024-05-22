@@ -46,3 +46,54 @@ export const onDeleteTask = /* GraphQL */ `
     }
   }
 `;
+export const onCreateDailyTask = /* GraphQL */ `
+  subscription OnCreateDailyTask(
+    $filter: ModelSubscriptionDailyTaskFilterInput
+  ) {
+    onCreateDailyTask(filter: $filter) {
+      id
+      createdAt
+      description
+      dueDate
+      index
+      name
+      userId
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateDailyTask = /* GraphQL */ `
+  subscription OnUpdateDailyTask(
+    $filter: ModelSubscriptionDailyTaskFilterInput
+  ) {
+    onUpdateDailyTask(filter: $filter) {
+      id
+      createdAt
+      description
+      dueDate
+      index
+      name
+      userId
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteDailyTask = /* GraphQL */ `
+  subscription OnDeleteDailyTask(
+    $filter: ModelSubscriptionDailyTaskFilterInput
+  ) {
+    onDeleteDailyTask(filter: $filter) {
+      id
+      createdAt
+      description
+      dueDate
+      index
+      name
+      userId
+      updatedAt
+      __typename
+    }
+  }
+`;

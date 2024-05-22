@@ -28,6 +28,33 @@ const theme: Theme = {
       medium: { value: '#22272b' },
       dark: { value: '#101204' }
     },
+    components: {
+      tabs: {
+        // borderColor: { value: '#22272b' },
+        item: {
+          color: { value: '#494e53' },
+          borderColor: { value: '#494e53' },
+          // fontSize: { value: '{fontSizes.xl}' },
+          // fontWeight: { value: '{fontWeights.normal}' },
+          paddingVertical: { value: '0.5rem' },
+          _hover: {
+            color: { value: '#c5ced9' },
+          },
+          _focus: {
+            color: { value: '{colors.light}' },
+          },
+          _active: {
+            color: { value: '#b6c2cf' },
+            borderColor: { value: '{colors.light}' },
+            // backgroundColor: { value: '{colors.blue.10}' },
+          },
+          _disabled: {
+            color: { value: 'gray' },
+            backgroundColor: { value: 'transparent' },
+          },
+        },
+      },
+    }
   },
 };
 

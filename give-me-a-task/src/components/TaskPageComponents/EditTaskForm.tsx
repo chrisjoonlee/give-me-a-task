@@ -1,14 +1,14 @@
 import { useContext, useEffect, useRef } from "react";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../../context/UserContext.tsx";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { PopupContext } from "../context/PopupContext";
+import { PopupContext } from "../../context/PopupContext.tsx";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { updateTask } from "../graphql/mutations.ts";
-import { UpdateTaskData } from "../types";
-import { TaskContext } from "../context/TaskContext";
+import { updateTask } from "../../graphql/mutations.ts";
+import { UpdateTaskData } from "../../types.ts";
+import { TaskContext } from "../../context/TaskContext.tsx";
 import TextareaAutosize from 'react-textarea-autosize';
-import { deleteTask } from "../functions.ts";
-import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
+import { deleteTask } from "../../functions.ts";
+import { CompletedTasksContext } from "../../context/CompletedTasksContext.tsx";
 
 type FormValues = {
     name: string

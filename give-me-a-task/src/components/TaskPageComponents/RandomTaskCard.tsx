@@ -1,11 +1,11 @@
 import { Button, Text, useTheme } from "@aws-amplify/ui-react";
-import { Task } from "../types.ts";
-import { TaskContext } from "../context/TaskContext";
+import { Task } from "../../types.ts";
+import { TaskContext } from "../../context/TaskContext.tsx";
 import React, { useContext, useEffect } from "react";
-import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
-import './animations.css';
+import { CompletedTasksContext } from "../../context/CompletedTasksContext.tsx";
+import '../animations.css';
 import DueDateBadge from "./DueDateBadge.tsx";
-import { deleteTask } from "../functions.ts";
+import { deleteTask } from "../../functions.ts";
 
 type RandomTaskCardProps = {
     task: Task

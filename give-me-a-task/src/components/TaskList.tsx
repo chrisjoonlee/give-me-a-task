@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Task, UpdateTaskData } from "../types";
+import { Task, UpdateTaskData } from "../types.ts";
 
 import { updateTask } from '../graphql/mutations.ts';
 import { GraphQLResult, generateClient } from "aws-amplify/api";
@@ -7,18 +7,23 @@ import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { TaskContext } from "../context/TaskContext.tsx";
 
 import { Heading, Text, useTheme } from '@aws-amplify/ui-react';
-import TaskCard from "./TaskCard.tsx";
+import TaskCard from "./TaskPageComponents/TaskCard.tsx";
 import { FaEnvelope as ClosedEnvelopeIcon } from "react-icons/fa";
 import { FaEnvelopeOpen as OpenEnvelopeIcon } from "react-icons/fa";
 import { PopupContext } from "../context/PopupContext.tsx";
-import EditTaskForm from "./EditTaskForm.tsx";
+import EditTaskForm from "./TaskPageComponents/EditTaskForm.tsx";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
-import TaskFilter from "./TaskFilter.tsx";
+import TaskFilter from "./TaskPageComponents/TaskFilter.tsx";
+import { IoSunny as SunIcon } from "react-icons/io5";
 
 const client = generateClient();
 
-const TaskList = () => {
-    const { tasksByIndex, tasksByDueDate, sortType } = useContext(TaskContext);
+type TaskListProps = {
+    type: string;
+}
+
+const TaskList = ({ type }: TaskListProps) => {
+    const { tasksByIndex, tasksByDueDate, dailyTasks, sortType } = useContext(TaskContext);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [showTasks, setShowTasks] = useState(false);
     const { taskToEdit } = useContext(PopupContext);
@@ -74,20 +79,30 @@ const TaskList = () => {
         })
     }
 
+    // Populate tasks (local state)
     useEffect(() => {
-        console.log("Sort type:", sortType);
+        if (type === "myTasks") {
+            console.log("Sort type:", sortType);
 
-        if (tasksByIndex && tasksByDueDate) {
-            console.log("Goal");
+            if (tasksByIndex && tasksByDueDate) {
+                console.log("Goal");
 
-            if (sortType === "dueDate") {
-                setTasks(tasksByDueDate);
-            }
-            else {
-                setTasks(tasksByIndex);
+                if (sortType === "dueDate") {
+                    setTasks(tasksByDueDate);
+                }
+                else {
+                    setTasks(tasksByIndex);
+                }
             }
         }
     }, [tasksByIndex, tasksByDueDate, sortType]);
+
+    // Populate daily tasks (local state)
+    useEffect(() => {
+        if (type === "daily" && dailyTasks) {
+            setTasks(dailyTasks);
+        }
+    }, [dailyTasks]);
 
     useEffect(() => {
         console.log("Task to edit:", taskToEdit);
@@ -95,22 +110,32 @@ const TaskList = () => {
 
     return (
         <div className="flex flex-col w-[300px] items-center space-y-4 pt-3 pb-5 rounded-lg bg-dark max-h-[calc(100vh-140px)] relative">
+
             {/* Heading */}
             <Heading level={5} color={tokens.colors.light}>
-                My Tasks
+                {type === "myTasks" && "My Tasks"}
+                {type === "daily" && "Daily"}
             </Heading>
 
-            {/* Envelope icon */}
+            {/* Icon */}
             <div
                 onClick={() => setShowTasks(!showTasks)}
                 className="cursor-pointer text-light
                     hover:-rotate-6 hover:text-white"
             >
-                {showTasks ? <OpenEnvelopeIcon size={30} /> : <ClosedEnvelopeIcon size={30} />}
+                {/* Envelope icon */}
+                {type === "myTasks" && (showTasks ?
+                    <OpenEnvelopeIcon size={30} />
+                    :
+                    <ClosedEnvelopeIcon size={30} />
+                )}
+
+                {/* Sun icon */}
+                {type === "daily" && <SunIcon size={30} />}
             </div>
 
             {/* Task filter */}
-            {showTasks && <TaskFilter />}
+            {type === "myTasks" && showTasks && <TaskFilter />}
 
             {/* If there are no tasks: Message */}
             {showTasks && tasks.length <= 0 &&
@@ -156,7 +181,5 @@ const TaskList = () => {
         </div>
     );
 }
-
-// createSub.unsubscribe();
 
 export default TaskList;

@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
-import { CreateTaskData } from "../types";
+import { CreateDailyTaskData, CreateTaskData } from "../types.ts";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { createTask } from "../graphql/mutations.ts";
+import { createDailyTask, createTask } from "../graphql/mutations.ts";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { UserContext } from "../context/UserContext";
-import { TaskContext } from "../context/TaskContext";
+import { UserContext } from "../context/UserContext.tsx";
+import { TaskContext } from "../context/TaskContext.tsx";
 import { Heading, useTheme } from "@aws-amplify/ui-react";
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -14,16 +14,21 @@ import './animations.css';
 const client = generateClient();
 
 type FormValues = {
-    name: string
-    description: string
-    dueDate?: string
+    name: string;
+    description: string;
+    dueDate?: string;
 }
 
-const AddTaskForm = () => {
+type AddTaskFormProps = {
+    type: string;
+}
+
+const AddTaskForm = ({ type }: AddTaskFormProps) => {
     const { userId } = useContext(UserContext);
     const {
         tasksByIndex, setTasksByIndex,
-        tasksByDueDate, setTasksByDueDate
+        tasksByDueDate, setTasksByDueDate,
+        dailyTasks, setDailyTasks
     } = useContext(TaskContext);
 
     const { tokens } = useTheme();
@@ -45,6 +50,12 @@ const AddTaskForm = () => {
             setAnimate(false);
         }, 1000);
 
+        // Create record in DynamoDB
+        if (type === "myTasks") createTaskRecord(formData);
+        if (type === "daily") createDailyTaskRecord(formData);
+    }
+
+    const createTaskRecord = async (formData: FormValues) => {
         try {
             const task = {
                 ...formData,
@@ -76,6 +87,37 @@ const AddTaskForm = () => {
         }
         catch (error) {
             console.log('Error creating task:', error);
+        }
+    }
+
+    const createDailyTaskRecord = async (formData: FormValues) => {
+        try {
+            const task = {
+                ...formData,
+                userId,
+                index: dailyTasks.length > 0 ? dailyTasks[dailyTasks.length - 1].index + 1 : 0
+            }
+
+            reset();
+
+            console.log("Daily task to add:", task);
+
+            // Create record in DynamoDB
+            const result = await client.graphql({
+                query: createDailyTask,
+                variables: {
+                    input: task,
+                },
+            }) as GraphQLResult<CreateDailyTaskData>;
+
+            // Update local state
+            const addedTask = result.data.createDailyTask;
+            setDailyTasks([...dailyTasks, addedTask]);
+
+            console.log("Daily task added successfully:", addedTask);
+        }
+        catch (error) {
+            console.log('Error creating daily task:', error);
         }
     }
 
@@ -126,18 +168,20 @@ const AddTaskForm = () => {
                 />
 
                 {/* Due date input */}
-                <div className="text-light mb-3">
-                    <label htmlFor="due-date-input" className="flex flex-col text-sm">
-                        Due date (optional)
-                    </label>
-                    <input
-                        {...register("dueDate")}
-                        type="date"
-                        id="due-date-input"
-                        min={today}
-                        className="px-3 py-1 border border-light rounded-lg w-full cursor-pointer"
-                    />
-                </div>
+                {type === "myTasks" &&
+                    <div className="text-light mb-3">
+                        <label htmlFor="due-date-input" className="flex flex-col text-sm">
+                            Due date (optional)
+                        </label>
+                        <input
+                            {...register("dueDate")}
+                            type="date"
+                            id="due-date-input"
+                            min={today}
+                            className="px-3 py-1 border border-light rounded-lg w-full cursor-pointer"
+                        />
+                    </div>
+                }
 
                 {/* Submit button */}
                 <button

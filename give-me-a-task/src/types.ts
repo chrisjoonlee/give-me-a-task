@@ -31,8 +31,18 @@ export type SearchTasksData = {
     }
 }
 
+export type SearchDailyTasksData = {
+    searchDailyTasks: {
+        items: Task[]
+    }
+}
+
 export type CreateTaskData = {
     createTask: Task;
+}
+
+export type CreateDailyTaskData = {
+    createDailyTask: Task;
 }
 
 export type UpdateTaskData = {

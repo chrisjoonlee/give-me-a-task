@@ -1,8 +1,8 @@
-import { Task } from "../types.ts";
+import { Task } from "../../types.ts";
 import { HiOutlineMenuAlt2 as ExpandIcon } from "react-icons/hi";
 import React, { useContext, useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { TaskContext } from "../context/TaskContext.tsx";
+import { TaskContext } from "../../context/TaskContext.tsx";
 import DueDateBadge from "./DueDateBadge.tsx";
 import EditButton from "./EditButton.tsx";
 

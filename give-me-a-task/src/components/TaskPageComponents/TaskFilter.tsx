@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { BsFilterRight as FilterIcon } from "react-icons/bs";
 import { FaClock as ClockIcon } from "react-icons/fa";
-import { TaskContext } from "../context/TaskContext";
+import { TaskContext } from "../../context/TaskContext";
 import { BiSolidSortAlt as SortIcon } from "react-icons/bi";
 
 const TaskFilter = () => {

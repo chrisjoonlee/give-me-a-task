@@ -1,6 +1,6 @@
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { DeleteTaskData, SearchTasksData, Task } from "./types";
-import { searchTasks } from './graphql/queries.ts';
+import { DeleteTaskData, SearchDailyTasksData, SearchTasksData, Task } from "./types";
+import { searchDailyTasks, searchTasks } from './graphql/queries.ts';
 import { deleteTask as deleteTaskQuery } from "./graphql/mutations.ts";
 
 const client = generateClient();
@@ -38,6 +38,31 @@ export const fetchTasks = async (userId: string, sortType: string): Promise<Task
         return tasks;
     } catch (error) {
         console.log('Error fetching tasks:', error);
+        return null;
+    }
+}
+
+export const fetchDailyTasks = async (userId: string): Promise<Task[] | null> => {
+    try {
+        // Send request to DynamoDB
+        const taskData = await client.graphql({
+            query: searchDailyTasks,
+            variables: {
+                filter: {
+                    userId: { eq: userId }
+                },
+                sort: {
+                    direction: "asc",
+                    field: "index"
+                }
+            }
+        }) as GraphQLResult<SearchDailyTasksData>;
+
+        const dailyTasks = taskData.data.searchDailyTasks.items;
+        console.log("Daily task list:", dailyTasks);
+        return dailyTasks;
+    } catch (error) {
+        console.log('Error fetching daily tasks:', error);
         return null;
     }
 }

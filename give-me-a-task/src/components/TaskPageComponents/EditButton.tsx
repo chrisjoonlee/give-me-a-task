@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { PopupContext } from "../context/PopupContext";
-import { Task } from "../types";
+import { PopupContext } from "../../context/PopupContext";
+import { Task } from "../../types";
 import { MdEdit as EditIcon } from "react-icons/md";
 
 type EditButtonProps = {

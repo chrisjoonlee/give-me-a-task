@@ -5,12 +5,12 @@ import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 import '@aws-amplify/ui-react/styles.css';
 import { FetchUserAttributesOutput, fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth';
 
-import TasksPage from './components/TasksPage';
 import { useContext, useEffect } from 'react';
 import { UserContext } from './context/UserContext';
 import Header from './components/Header';
 import { TaskContext } from './context/TaskContext';
-import { fetchTasks } from './functions';
+import { fetchDailyTasks, fetchTasks } from './functions';
+import HomePage from './components/HomePage';
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]; //() => void;
@@ -19,7 +19,7 @@ type AppProps = {
 const App: React.FC<AppProps> = ({ signOut }) => {
 
   const { userId, setUserId } = useContext(UserContext);
-  const { setTasksByIndex, setTasksByDueDate } = useContext(TaskContext);
+  const { setTasksByIndex, setTasksByDueDate, setDailyTasks } = useContext(TaskContext);
 
   // Fetch username
   const fetchCurrentUsername = async () => {
@@ -58,15 +58,21 @@ const App: React.FC<AppProps> = ({ signOut }) => {
     if (userId) {
       // Fetch tasks by index
       fetchTasks(userId, "index")
-        .then(res => {
-          if (res) setTasksByIndex(res);
+        .then(tasks => {
+          if (tasks) setTasksByIndex(tasks);
         });
 
       // Fetch tasks by due date
       fetchTasks(userId, "dueDate")
-        .then(res => {
-          if (res) setTasksByDueDate(res);
+        .then(tasks => {
+          if (tasks) setTasksByDueDate(tasks);
         });
+
+      // Fetch daily tasks
+      fetchDailyTasks(userId)
+        .then(tasks => {
+          if (tasks) setDailyTasks(tasks);
+        })
     }
     else console.log("TaskList.tsx: No user ID");
   }, [userId]);
@@ -74,7 +80,7 @@ const App: React.FC<AppProps> = ({ signOut }) => {
   return (
     <Routes>
       <Route element={<Header signOut={signOut} />}>
-        <Route path="/" element={<TasksPage />} />
+        <Route path="/" element={<HomePage />} />
       </Route>
     </Routes>
   );

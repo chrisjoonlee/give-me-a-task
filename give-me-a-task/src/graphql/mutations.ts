@@ -55,3 +55,57 @@ export const deleteTask = /* GraphQL */ `
     }
   }
 `;
+export const createDailyTask = /* GraphQL */ `
+  mutation CreateDailyTask(
+    $input: CreateDailyTaskInput!
+    $condition: ModelDailyTaskConditionInput
+  ) {
+    createDailyTask(input: $input, condition: $condition) {
+      id
+      createdAt
+      description
+      dueDate
+      index
+      name
+      userId
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateDailyTask = /* GraphQL */ `
+  mutation UpdateDailyTask(
+    $input: UpdateDailyTaskInput!
+    $condition: ModelDailyTaskConditionInput
+  ) {
+    updateDailyTask(input: $input, condition: $condition) {
+      id
+      createdAt
+      description
+      dueDate
+      index
+      name
+      userId
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteDailyTask = /* GraphQL */ `
+  mutation DeleteDailyTask(
+    $input: DeleteDailyTaskInput!
+    $condition: ModelDailyTaskConditionInput
+  ) {
+    deleteDailyTask(input: $input, condition: $condition) {
+      id
+      createdAt
+      description
+      dueDate
+      index
+      name
+      userId
+      updatedAt
+      __typename
+    }
+  }
+`;

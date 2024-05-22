@@ -1,4 +1,4 @@
-import { distanceFromNow, formatDate } from "../functions";
+import { distanceFromNow, formatDate } from "../../functions";
 
 type DueDateBadgeProps = {
     date: string
