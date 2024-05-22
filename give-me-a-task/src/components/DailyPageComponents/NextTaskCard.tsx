@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Task } from "../../types";
 import FormattedText from "../FormattedText";
 import { RiArrowLeftSFill as LeftArrow } from "react-icons/ri";
@@ -36,7 +36,7 @@ const NextTaskCard = ({ task }: NextTaskCardProps) => {
             key={task.id}
             className="flex flex-col items-center justify-between w-full text-center bg-medium rounded-lg"
         >
-            <div className="flex flex-row justify-between w-full bg-gray-600 py-1 px-3 rounded-t-lg">
+            <div className="flex flex-row items-center justify-between w-full bg-gray-600 py-1 px-3 rounded-t-lg">
                 {/* Left button */}
                 {task.index > 0 ?
                     <div
@@ -50,6 +50,9 @@ const NextTaskCard = ({ task }: NextTaskCardProps) => {
                         <LeftArrow size={arrowSize} />
                     </div>
                 }
+
+                {/* Number */}
+                <div className="font-bold text-light">{currentDailyTaskIndex + 1}</div>
 
                 {/* Right button */}
                 {task.index < dailyTasks.length - 1 ?

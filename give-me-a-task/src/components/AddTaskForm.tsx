@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import { CreateDailyTaskData, CreateTaskData } from "../types.ts";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 import { createDailyTask, createTask } from "../graphql/mutations.ts";
@@ -7,6 +7,7 @@ import { UserContext } from "../context/UserContext.tsx";
 import { TaskContext } from "../context/TaskContext.tsx";
 import { Heading, useTheme } from "@aws-amplify/ui-react";
 import TextareaAutosize from 'react-textarea-autosize';
+import { PiListBulletsBold as BulletListIcon } from "react-icons/pi";
 
 import { IoMdAdd as AddIcon } from "react-icons/io";
 import './animations.css';
@@ -42,6 +43,184 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
             description: ""
         }
     });
+
+    const [description, setDescription] = useState<string>("");
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [listMode, setListMode] = useState<string>("");
+    const bullet = '• ';
+
+    const isBulleted = (string: string): boolean => {
+        if (string.length < 2) return false;
+        return string.slice(0, 2) === bullet;
+    }
+
+    const handleBulletList = () => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            const { selectionStart, selectionEnd } = textarea;
+
+            const valueBefore = description.slice(0, selectionStart);
+            const linesBefore = valueBefore.split('\n');
+            const previousLines = linesBefore.slice(0, -1).join('\n');
+            const lastLine = linesBefore[linesBefore.length - 1];
+
+            const valueAfter = description.slice(selectionEnd);
+            const linesAfter = valueAfter.split('\n');
+            const nextLines = linesAfter.slice(1).join('\n');
+            const nextLine = linesAfter[0];
+
+            if (selectionStart === selectionEnd) {
+                const currentLine = lastLine + nextLine;
+
+                if (isBulleted(currentLine)) removeBullet(textarea, previousLines, currentLine, nextLines, selectionStart);
+                else addBullet(textarea, previousLines, currentLine, nextLines, selectionStart);
+            }
+            // Highlighted selection
+            else {
+
+                const selection = description.slice(selectionStart, selectionEnd);
+                const selectedLines = selection.split('\n');
+
+                let newValue = "";
+                if (previousLines) newValue += previousLines + '\n';
+
+                if (selectedLines.length === 1) {
+                    const selectedLine = lastLine + selection + nextLine;
+                    if (isBulleted(selectedLine)) {
+                        newValue += selectedLine.slice(2);
+                        setListMode("");
+                    }
+                    else {
+                        newValue += bullet + selectedLine;
+                        setListMode("bullet");
+                    }
+                }
+                else {
+                    let newMode = "";
+                    const firstSelectedLine = lastLine + selectedLines[0];
+                    if (!isBulleted(firstSelectedLine)) {
+                        newMode = "bullet";
+                        newValue += bullet;
+                    }
+                    newValue += firstSelectedLine;
+
+                    if (selectedLines.length > 2) {
+                        for (let i = 1; i < selectedLines.length - 1; i++) {
+                            newValue += '\n';
+                            if (!isBulleted(selectedLines[i])) {
+                                newMode = "bullet";
+                                newValue += bullet;
+                            }
+                            newValue += selectedLines[i];
+                        }
+                    }
+                    const lastSelectedLine = selectedLines[selectedLines.length - 1] + nextLine;
+                    newValue += '\n';
+                    if (!isBulleted(lastSelectedLine)) {
+                        newMode = "bullet";
+                        newValue += bullet;
+                    }
+                    newValue += lastSelectedLine;
+
+                    setListMode(newMode);
+                }
+
+                if (nextLines) newValue += '\n' + nextLines;
+
+                setDescription(newValue);
+            }
+        }
+    }
+
+    const addBullet = (textarea: HTMLTextAreaElement, previousLines: string, currentLine: string, nextLines: string, selectionStart: number) => {
+        setListMode("bullet");
+
+        let newValue = "";
+        if (previousLines) newValue += previousLines + '\n';
+        newValue += bullet + currentLine;
+        if (nextLines) newValue += '\n' + nextLines;
+        setDescription(newValue);
+
+        // Set cursor position
+        setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = selectionStart + bullet.length + 1;
+            textarea.focus();
+        }, 0);
+    }
+
+    const removeBullet = (textarea: HTMLTextAreaElement, previousLines: string, currentLine: string, nextLines: string, selectionStart: number) => {
+        setListMode("");
+
+        console.log("HEY CUrrent line:", currentLine.slice(2));
+
+        let newValue = "";
+        if (previousLines) newValue += previousLines + '\n';
+        newValue += currentLine.slice(2);
+        if (nextLines) newValue += '\n' + nextLines;
+        setDescription(newValue);
+
+        // Set cursor position
+        setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = selectionStart - bullet.length;
+            textarea.focus();
+        }, 0);
+    }
+
+    const handleCursorChange = () => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            const { selectionStart, selectionEnd } = textarea;
+            const valueBefore: string = description.slice(0, selectionStart);
+            const linesBefore = valueBefore.split('\n');
+            const lastLine = linesBefore[linesBefore.length - 1];
+
+            const valueAfter: string = description.slice(selectionEnd);
+            const linesAfter = valueAfter.split('\n');
+            const nextLine = linesAfter[0];
+
+            const currentLine = lastLine + nextLine;
+
+            if (isBulleted(currentLine)) setListMode("bullet");
+            else setListMode("");
+        }
+    }
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+        if (listMode === "bullet") {
+
+            // Handle enter
+            if (e.key === 'Enter') {
+                e.preventDefault();
+
+                const textarea = textareaRef.current;
+                if (textarea) {
+                    const { selectionStart, selectionEnd } = textarea;
+                    const valueBefore: string = description.slice(0, selectionStart);
+                    const linesBefore = valueBefore.split('\n');
+                    const previousLines = linesBefore.slice(0, -1).join('\n');
+                    const lastLine = linesBefore[linesBefore.length - 1];
+
+                    const valueAfter: string = description.slice(selectionEnd);
+                    const linesAfter = valueAfter.split('\n');
+                    const nextLines = linesAfter.slice(1).join('\n');
+                    const nextLine = linesAfter[0];
+
+                    const currentLine = lastLine + nextLine;
+                    const isEmptyBullet = currentLine === bullet;
+
+                    if (isEmptyBullet) {
+                        removeBullet(textarea, previousLines, currentLine, nextLines, selectionStart);
+                        setListMode("");
+                    }
+                    else if (isBulleted(currentLine)) addBullet(textarea, valueBefore, nextLine, nextLines, selectionStart);
+                }
+            }
+            // Handle delete
+            else if (e.key === 'Delete' || e.key === 'Backspace') {
+
+            }
+        }
+    };
 
     const submitForm: SubmitHandler<FormValues> = async (formData: FormValues) => {
         // Explode animation
@@ -147,7 +326,7 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
                             minRows={1}
                             maxRows={15}
                             placeholder="Task"
-                            className="border border-light rounded-lg px-4 py-3 mb-1"
+                            className="border border-light rounded-lg px-4 py-3 mb-2 bg-dark"
                         />
                     )}
                 />
@@ -157,13 +336,34 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
                     name="description"
                     control={control}
                     render={({ field }) => (
-                        <TextareaAutosize
-                            {...field}
-                            minRows={3}
-                            maxRows={15}
-                            placeholder="Description (optional)"
-                            className="border border-light rounded-lg px-4 py-3 mb-3"
-                        />
+                        <div className="flex flex-col mb-3 border border-light rounded-lg">
+
+                            {/* Style menu */}
+                            <div className="bg-medium py-1 text-light flex items-center justify-center rounded-t-lg">
+                                <div
+                                    onClick={handleBulletList}
+                                    className={`border-opacity-70 px-2 hover:bg-gray-600 cursor-pointer transition-colors
+                                        ${listMode === "bullet" && "bg-gray-700"}`}
+                                >
+
+                                    <BulletListIcon size={18} />
+                                </div>
+                            </div>
+
+                            {/* Input */}
+                            <TextareaAutosize
+                                {...field}
+                                ref={textareaRef}
+                                value={description}
+                                onChange={e => setDescription(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                onSelect={handleCursorChange}
+                                minRows={3}
+                                maxRows={15}
+                                placeholder="Description (optional)"
+                                className="rounded-lg px-4 py-3 bg-dark"
+                            />
+                        </div>
                     )}
                 />
 
@@ -178,7 +378,7 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
                             type="date"
                             id="due-date-input"
                             min={today}
-                            className="px-3 py-1 border border-light rounded-lg w-full cursor-pointer"
+                            className="px-3 py-1 border border-light rounded-lg w-full cursor-pointer bg-dark"
                         />
                     </div>
                 }
@@ -193,6 +393,10 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
                 </button>
             </form>
         </>
+
+    useEffect(() => {
+        console.log("List mode:", listMode);
+    }, [listMode]);
 
     return (
         <>
