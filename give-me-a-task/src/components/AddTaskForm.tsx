@@ -237,7 +237,9 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
     const createTaskRecord = async (formData: FormValues) => {
         try {
             const task = {
-                ...formData,
+                name: formData.name,
+                dueDate: formData.dueDate,
+                description,
                 userId,
                 index: tasksByIndex.length > 0 ? tasksByIndex[tasksByIndex.length - 1].index + 1 : 0
             };
@@ -272,7 +274,8 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
     const createDailyTaskRecord = async (formData: FormValues) => {
         try {
             const task = {
-                ...formData,
+                name: formData.name,
+                description,
                 userId,
                 index: dailyTasks.length > 0 ? dailyTasks[dailyTasks.length - 1].index + 1 : 0
             }
