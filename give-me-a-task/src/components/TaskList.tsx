@@ -11,7 +11,7 @@ import TaskCard from "./TaskPageComponents/TaskCard.tsx";
 import { FaEnvelope as ClosedEnvelopeIcon } from "react-icons/fa";
 import { FaEnvelopeOpen as OpenEnvelopeIcon } from "react-icons/fa";
 import { PopupContext } from "../context/PopupContext.tsx";
-import EditTaskForm from "./TaskPageComponents/EditTaskForm.tsx";
+import EditTaskForm from "./EditTaskForm.tsx";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
 import TaskFilter from "./TaskPageComponents/TaskFilter.tsx";
 import { IoSunny as SunIcon } from "react-icons/io5";
@@ -160,6 +160,7 @@ const TaskList = ({ type }: TaskListProps) => {
                                         if (taskToEdit && taskToEdit.id === task.id) return (
                                             <EditTaskForm
                                                 key={task.id}
+                                                type={type}
                                             />
                                         )
                                         // Norml task card

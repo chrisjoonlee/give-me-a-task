@@ -52,3 +52,7 @@ export type UpdateTaskData = {
 export type DeleteTaskData = {
     deleteTask: Task;
 }
+
+export type DeleteDailyTaskData = {
+    deleteDailyTask: Task;
+}

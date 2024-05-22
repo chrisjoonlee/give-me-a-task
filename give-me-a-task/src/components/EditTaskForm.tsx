@@ -1,14 +1,14 @@
 import { useContext, useEffect, useRef } from "react";
-import { UserContext } from "../../context/UserContext.tsx";
+import { UserContext } from "../context/UserContext.tsx";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { PopupContext } from "../../context/PopupContext.tsx";
+import { PopupContext } from "../context/PopupContext.tsx";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { updateTask } from "../../graphql/mutations.ts";
-import { UpdateTaskData } from "../../types.ts";
-import { TaskContext } from "../../context/TaskContext.tsx";
+import { updateTask } from "../graphql/mutations.ts";
+import { UpdateTaskData } from "../types.ts";
+import { TaskContext } from "../context/TaskContext.tsx";
 import TextareaAutosize from 'react-textarea-autosize';
-import { deleteTask } from "../../functions.ts";
-import { CompletedTasksContext } from "../../context/CompletedTasksContext.tsx";
+import { deleteDailyTask, deleteTask } from "../functions.ts";
+import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
 
 type FormValues = {
     name: string
@@ -18,13 +18,18 @@ type FormValues = {
 
 const client = generateClient();
 
-const EditTaskForm = () => {
+type EditTaskFormProps = {
+    type: string;
+}
+
+const EditTaskForm = ({ type }: EditTaskFormProps) => {
     const { userId } = useContext(UserContext);
     const { taskToEdit, setTaskToEdit } = useContext(PopupContext);
     const {
         tasksByIndex, setTasksByIndex,
         tasksByDueDate, setTasksByDueDate,
         currentTask, setCurrentTask,
+        dailyTasks, setDailyTasks
     } = useContext(TaskContext);
     const { completedTasks, setCompletedTasks } = useContext(CompletedTasksContext);
     const formRef = useRef<HTMLDivElement>(null);
@@ -91,6 +96,20 @@ const EditTaskForm = () => {
                         setCompletedTasks([...completedTasks, deletedTask]);
                     }
                 });
+        }
+    }
+
+    const handleDeleteDailyTask = async () => {
+        if (taskToEdit) {
+            console.log("Task to delete:", taskToEdit);
+            deleteDailyTask(taskToEdit)
+                .then(deletedTask => {
+                    if (deletedTask) {
+                        setDailyTasks(dailyTasks.filter(task => task.id !== deletedTask.id));
+
+                        // Add to completed daily tasks
+                    }
+                })
         }
     }
 
@@ -169,12 +188,24 @@ const EditTaskForm = () => {
 
                 {/* Buttons */}
                 <div className="grid grid-cols-2 gap-4">
-                    <button
-                        className="bg-light rounded-lg flex items-center justify-center text-dark font-bold"
-                        onClick={handleComplete}
-                    >
-                        Complete
-                    </button>
+                    {type === "myTasks" &&
+                        <button
+                            className="bg-light rounded-lg flex items-center justify-center text-dark font-bold"
+                            onClick={handleComplete}
+                        >
+                            Complete
+                        </button>
+                    }
+
+                    {type === "daily" &&
+                        <button
+                            className="bg-red-800 hover:bg-red-900 rounded-lg flex items-center justify-center text-red-100 font-bold transition-colors"
+                            onClick={handleDeleteDailyTask}
+                        >
+                            Delete
+                        </button>
+                    }
+
                     <button
                         type="submit"
                         className="border border-light bg-medium rounded-lg flex items-center justify-center"

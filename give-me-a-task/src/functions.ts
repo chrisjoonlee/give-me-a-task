@@ -1,7 +1,7 @@
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { DeleteTaskData, SearchDailyTasksData, SearchTasksData, Task } from "./types";
+import { DeleteDailyTaskData, DeleteTaskData, SearchDailyTasksData, SearchTasksData, Task } from "./types";
 import { searchDailyTasks, searchTasks } from './graphql/queries.ts';
-import { deleteTask as deleteTaskQuery } from "./graphql/mutations.ts";
+import { deleteTask as deleteTaskQuery, deleteDailyTask as deleteDailyTaskQuery } from "./graphql/mutations.ts";
 
 const client = generateClient();
 
@@ -85,6 +85,27 @@ export const deleteTask = async (task: Task) => {
     }
     catch (error) {
         console.log("Error deleting task:", error);
+    }
+}
+
+export const deleteDailyTask = async (task: Task) => {
+    try {
+        // Delete record in DynamoDB
+        const result = await client.graphql({
+            query: deleteDailyTaskQuery,
+            variables: {
+                input: {
+                    id: task.id
+                }
+            }
+        }) as GraphQLResult<DeleteDailyTaskData>;
+
+        const deletedTask = result.data.deleteDailyTask;
+        console.log("Successfully deleted daily task:", deletedTask);
+        return deletedTask
+    }
+    catch (error) {
+        console.log("Error deleting daily task:", error);
     }
 }
 
