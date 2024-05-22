@@ -52,6 +52,9 @@ const AddTaskForm = () => {
                 index: tasksByIndex.length > 0 ? tasksByIndex[tasksByIndex.length - 1].index + 1 : 0
             };
 
+            // Remove due date if no value present
+            if (!task.dueDate) delete task.dueDate;
+
             reset();
 
             console.log("Task to add:", task);

@@ -25,7 +25,6 @@ const EditTaskForm = () => {
         tasksByIndex, setTasksByIndex,
         tasksByDueDate, setTasksByDueDate,
         currentTask, setCurrentTask,
-        setTaskCompleted,
     } = useContext(TaskContext);
     const { completedTasks, setCompletedTasks } = useContext(CompletedTasksContext);
     const formRef = useRef<HTMLDivElement>(null);
@@ -36,7 +35,6 @@ const EditTaskForm = () => {
         defaultValues: {
             name: taskToEdit ? taskToEdit.name : "",
             description: taskToEdit ? taskToEdit.description : "",
-            dueDate: taskToEdit && taskToEdit.dueDate ? taskToEdit.dueDate : ""
         }
     });
 
@@ -49,6 +47,10 @@ const EditTaskForm = () => {
                     index: taskToEdit.index,
                     userId
                 };
+
+                // Remove due date if no value present
+                if (!task.dueDate) delete task.dueDate;
+
                 reset();
                 setTaskToEdit(null);
 
@@ -84,7 +86,6 @@ const EditTaskForm = () => {
                         // Update local state
                         setTasksByIndex(tasksByIndex.filter(task => task.id !== deletedTask.id));
                         setTasksByDueDate(tasksByDueDate.filter(task => task.id !== deletedTask.id));
-                        setTaskCompleted(true);
 
                         // Add to completed tasks list
                         setCompletedTasks([...completedTasks, deletedTask]);
