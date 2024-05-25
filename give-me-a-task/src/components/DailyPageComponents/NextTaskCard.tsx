@@ -4,6 +4,7 @@ import FormattedText from "../FormattedText";
 import { RiArrowLeftSFill as LeftArrow } from "react-icons/ri";
 import { RiArrowRightSFill as RightArrow } from "react-icons/ri";
 import { TaskContext } from "../../context/TaskContext";
+import { isList } from "../../functions";
 
 type NextTaskCardProps = {
     task: Task
@@ -34,8 +35,9 @@ const NextTaskCard = ({ task }: NextTaskCardProps) => {
     return (
         <div
             key={task.id}
-            className="flex flex-col items-center justify-between w-full text-center bg-medium rounded-lg"
+            className="flex flex-col justify-between w-full bg-medium rounded-lg"
         >
+            {/* Header */}
             <div className="flex flex-row items-center justify-between w-full bg-gray-600 py-1 px-3 rounded-t-lg">
                 {/* Left button */}
                 {task.index > 0 ?
@@ -70,22 +72,20 @@ const NextTaskCard = ({ task }: NextTaskCardProps) => {
             </div>
 
             {/* Content */}
-            <div>
-                <div className="px-5 py-5">
-                    {/* Heading */}
-                    <FormattedText
-                        text={task.name}
-                        classNames="font-bold text-light"
-                    />
+            <div className="px-5 py-5">
+                {/* Heading */}
+                <FormattedText
+                    text={task.name}
+                    classNames="font-bold text-light text-center"
+                />
 
-                    {/* Description */}
-                    {task.description &&
-                        <FormattedText
-                            text={task.description}
-                            classNames="text-light mt-3"
-                        />
-                    }
-                </div>
+                {/* Description */}
+                {task.description &&
+                    <FormattedText
+                        text={task.description}
+                        classNames={`text-light mt-3 ${!isList(task.description) && 'text-center'}`}
+                    />
+                }
             </div>
         </div>
     );

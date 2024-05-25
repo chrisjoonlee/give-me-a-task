@@ -5,7 +5,7 @@ import { useContext, useEffect } from "react";
 import { CompletedTasksContext } from "../../context/CompletedTasksContext.tsx";
 import '../animations.css';
 import DueDateBadge from "./DueDateBadge.tsx";
-import { deleteTask } from "../../functions.ts";
+import { deleteTask, isList } from "../../functions.ts";
 import FormattedText from "../FormattedText.tsx";
 
 type RandomTaskCardProps = {
@@ -59,21 +59,21 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                 // NORMAL TASK CARD
                 <div
                     key={task.id}
-                    className="group w-full text-center pt-3 bg-medium rounded-lg"
+                    className="group w-full pt-3 bg-medium rounded-lg"
                 >
 
-                    <div className="px-3 pb-5">
+                    <div className="px-5 pb-5">
                         {/* Heading */}
                         <FormattedText
                             text={task.name}
-                            classNames="font-bold text-light"
+                            classNames="font-bold text-light text-center"
                         />
 
                         {/* Description */}
                         {task.description &&
                             <FormattedText
                                 text={task.description}
-                                classNames="text-light mt-3"
+                                classNames={`text-light mt-3 ${!isList(task.description) && 'text-center'}`}
                             />
                         }
 

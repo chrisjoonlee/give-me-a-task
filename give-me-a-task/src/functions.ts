@@ -5,6 +5,8 @@ import { deleteTask as deleteTaskQuery, deleteDailyTask as deleteDailyTaskQuery 
 
 const client = generateClient();
 
+const bullet = '• ';
+
 export const fetchTasks = async (userId: string, sortType: string): Promise<Task[] | null> => {
     try {
         let sort;
@@ -130,3 +132,13 @@ export const distanceFromNow = (dateString: string): number => {
 
     return differenceInDays;
 };
+
+export const isList = (text: string): boolean => {
+    const lines = text.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].slice(0, 2) === bullet) return true;
+    }
+
+    return false;
+}
