@@ -169,6 +169,7 @@ const TaskList = ({ type }: TaskListProps) => {
                                                 key={task.id}
                                                 index={index}
                                                 task={task}
+                                                type={type}
                                             />
                                         )
                                     })

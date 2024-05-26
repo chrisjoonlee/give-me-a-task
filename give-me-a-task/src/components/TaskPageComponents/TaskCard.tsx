@@ -10,9 +10,10 @@ import FormattedText from "../FormattedText.tsx";
 type TaskCardProps = {
     index: number;
     task: Task;
+    type: string;
 }
 
-const TaskCard = ({ index, task }: TaskCardProps) => {
+const TaskCard = ({ index, task, type = "myTasks" }: TaskCardProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const { sortType } = useContext(TaskContext);
 
@@ -61,7 +62,7 @@ const TaskCard = ({ index, task }: TaskCardProps) => {
     </>
 
     //  Draggable version
-    if (sortType === "index") return (
+    if (sortType === "index" || type === "daily") return (
         <Draggable draggableId={task.id} index={index}>
             {provided => (
                 <div
