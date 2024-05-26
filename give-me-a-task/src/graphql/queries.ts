@@ -72,7 +72,6 @@ export const searchDailyTasks = /* GraphQL */ `
         id
         createdAt
         description
-        dueDate
         index
         name
         userId
@@ -145,7 +144,6 @@ export const getDailyTask = /* GraphQL */ `
       id
       createdAt
       description
-      dueDate
       index
       name
       userId
@@ -165,7 +163,6 @@ export const listDailyTasks = /* GraphQL */ `
         id
         createdAt
         description
-        dueDate
         index
         name
         userId

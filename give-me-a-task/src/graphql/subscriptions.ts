@@ -54,7 +54,6 @@ export const onCreateDailyTask = /* GraphQL */ `
       id
       createdAt
       description
-      dueDate
       index
       name
       userId
@@ -71,7 +70,6 @@ export const onUpdateDailyTask = /* GraphQL */ `
       id
       createdAt
       description
-      dueDate
       index
       name
       userId
@@ -88,7 +86,6 @@ export const onDeleteDailyTask = /* GraphQL */ `
       id
       createdAt
       description
-      dueDate
       index
       name
       userId

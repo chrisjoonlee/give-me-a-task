@@ -3,8 +3,8 @@ import { UserContext } from "../context/UserContext.tsx";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { PopupContext } from "../context/PopupContext.tsx";
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-import { updateTask } from "../graphql/mutations.ts";
-import { UpdateTaskData } from "../types.ts";
+import { updateDailyTask, updateTask } from "../graphql/mutations.ts";
+import { UpdateDailyTaskData, UpdateTaskData } from "../types.ts";
 import { TaskContext } from "../context/TaskContext.tsx";
 import TextareaAutosize from 'react-textarea-autosize';
 import { deleteDailyTask, deleteTask } from "../functions.ts";
@@ -44,6 +44,11 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
     });
 
     const submitForm: SubmitHandler<FormValues> = async (formData: FormValues) => {
+        if (type === "myTasks") await editTask(formData);
+        if (type === "daily") await editDailyTask(formData);
+    }
+
+    const editTask = async (formData: FormValues) => {
         if (taskToEdit) {
             try {
                 const task = {
@@ -81,7 +86,88 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
                 console.log('Error updating task:', error);
             }
         }
-    }
+    };
+
+    const editDailyTask = async (formData: FormValues) => {
+        if (taskToEdit) {
+            try {
+                const task = {
+                    ...formData,
+                    id: taskToEdit.id,
+                    index: taskToEdit.index,
+                    userId
+                };
+
+                reset();
+                setTaskToEdit(null);
+
+                if (!task.dueDate) delete task.dueDate;
+
+                console.log("TASK:", task);
+
+                // Update record in DynamoDB
+                const result = await client.graphql({
+                    query: updateDailyTask,
+                    variables: {
+                        input: task
+                    }
+                }) as GraphQLResult<UpdateDailyTaskData>;
+
+                // Update local state
+                const updatedTask = result.data.updateDailyTask;
+                setDailyTasks(dailyTasks.map(task => task.id === updatedTask.id ? updatedTask : task));
+
+                console.log("Task updated successfully:", updatedTask);
+            }
+            catch (error) {
+                console.log('Error updating task:', error);
+            }
+        }
+    };
+
+    // const submitForm = async () => {
+    //     if (taskToEdit) {
+    //         try {
+    //             const task = {
+    //                 name: taskToEdit.name,
+    //                 description: taskToEdit.description,
+    //                 dueDate: taskToEdit.dueDate,
+    //                 id: taskToEdit.id,
+    //                 index: taskToEdit.index,
+    //                 userId
+    //             };
+
+    //             // Remove due date if no value present
+    //             if (!task.dueDate) delete task.dueDate;
+
+    //             console.log("TASK:", task);
+
+    //             // reset();
+    //             setTaskToEdit(null);
+
+    //             // Update record in DynamoDB
+    //             const result = await client.graphql({
+    //                 query: updateTask,
+    //                 variables: {
+    //                     input: task
+    //                 }
+    //             }) as GraphQLResult<UpdateTaskData>;
+
+    //             // Update local state
+    //             const updatedTask = result.data.updateTask;
+    //             setTasksByIndex(tasksByIndex.map(task => task.id === updatedTask.id ? updatedTask : task));
+    //             setTasksByDueDate(tasksByDueDate.map(task => task.id === updatedTask.id ? updatedTask : task));
+    //             if (currentTask && currentTask !== true && currentTask.index === taskToEdit.index) {
+    //                 setCurrentTask(updatedTask);
+    //             }
+
+    //             console.log("Task updated successfully:", updatedTask);
+    //         }
+    //         catch (error) {
+    //             console.log('Error updating task:', error);
+    //         }
+    //     }
+    // }
 
     const handleComplete = async () => {
         if (taskToEdit) {
@@ -188,23 +274,12 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
 
                 {/* Buttons */}
                 <div className="grid grid-cols-2 gap-4">
-                    {type === "myTasks" &&
-                        <button
-                            className="bg-light rounded-lg flex items-center justify-center text-dark font-bold"
-                            onClick={handleComplete}
-                        >
-                            Complete
-                        </button>
-                    }
-
-                    {type === "daily" &&
-                        <button
-                            className="bg-red-800 hover:bg-red-900 rounded-lg flex items-center justify-center text-red-100 font-bold transition-colors"
-                            onClick={handleDeleteDailyTask}
-                        >
-                            Delete
-                        </button>
-                    }
+                    <button
+                        className="bg-red-800 hover:bg-red-900 rounded-lg flex items-center justify-center text-red-100 font-bold transition-colors"
+                        onClick={type === "myTasks" ? handleComplete : handleDeleteDailyTask}
+                    >
+                        Delete
+                    </button>
 
                     <button
                         type="submit"

@@ -16,7 +16,6 @@ type DailyTask @model @searchable {
   id: ID!
   createdAt: AWSDateTime!
   description: String
-  dueDate: AWSDate
   index: Int!
   name: String!
   userId: String!
