@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import { Task, UpdateTaskData } from "../types.ts";
+import { Task, UpdateDailyTaskData, UpdateTaskData } from "../types.ts";
 
-import { updateTask } from '../graphql/mutations.ts';
+import { updateDailyTask, updateTask } from '../graphql/mutations.ts';
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 
 import { TaskContext } from "../context/TaskContext.tsx";
@@ -36,18 +36,35 @@ const TaskList = ({ type }: TaskListProps) => {
             console.log("New index:", index);
 
             // Update record in DynamoDB
-            const result = await client.graphql({
-                query: updateTask,
-                variables: {
-                    input: {
-                        id: task.id,
-                        index
+            if (type === "myTasks") {
+                const result = await client.graphql({
+                    query: updateTask,
+                    variables: {
+                        input: {
+                            id: task.id,
+                            index
+                        }
                     }
-                }
-            }) as GraphQLResult<UpdateTaskData>;
+                }) as GraphQLResult<UpdateTaskData>;
 
-            const updatedTask = result.data.updateTask;
-            console.log("Task updated successfully:", updatedTask);
+                const updatedTask = result.data.updateTask;
+                console.log("Task updated successfully:", updatedTask);
+            }
+
+            if (type === "daily") {
+                const result = await client.graphql({
+                    query: updateDailyTask,
+                    variables: {
+                        input: {
+                            id: task.id,
+                            index
+                        }
+                    }
+                }) as GraphQLResult<UpdateDailyTaskData>;
+
+                const updatedTask = result.data.updateDailyTask;
+                console.log("Daily task updated successfully:", updatedTask);
+            }
         }
         catch (error) {
             console.log('Error updating task:', error);
