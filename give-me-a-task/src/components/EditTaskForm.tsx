@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../context/UserContext.tsx";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { PopupContext } from "../context/PopupContext.tsx";
@@ -9,6 +9,7 @@ import { TaskContext } from "../context/TaskContext.tsx";
 import TextareaAutosize from 'react-textarea-autosize';
 import { deleteDailyTask, deleteTask } from "../functions.ts";
 import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
+import RichTextEditor from "./RichTextEditor.tsx";
 
 type FormValues = {
     name: string
@@ -36,6 +37,8 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
 
     const today = new Date().toISOString().split('T')[0];
 
+    const [description, setDescription] = useState<string>("");
+
     const { register, handleSubmit, reset, control } = useForm<FormValues>({
         defaultValues: {
             name: taskToEdit ? taskToEdit.name : "",
@@ -52,7 +55,9 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
         if (taskToEdit && tasksByIndex && tasksByDueDate) {
             try {
                 const task = {
-                    ...formData,
+                    name: formData.name,
+                    dueDate: formData.dueDate,
+                    description,
                     id: taskToEdit.id,
                     index: taskToEdit.index,
                     userId
@@ -92,7 +97,8 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
         if (taskToEdit && dailyTasks) {
             try {
                 const task = {
-                    ...formData,
+                    name: formData.name,
+                    description,
                     id: taskToEdit.id,
                     index: taskToEdit.index,
                     userId
@@ -163,6 +169,8 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
 
     useEffect(() => {
         if (taskToEdit) {
+            if (taskToEdit.description) setDescription(taskToEdit.description);
+
             setTimeout(() => {
                 document.addEventListener('click', handleClickOutside);
                 return () => {
@@ -175,12 +183,12 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
     return (
         <div
             ref={formRef}
-            className="rounded-lg bg-medium px-4 py-3"
+            className="rounded-lg bg-medium px-3 py-3"
         >
             {/* EDIT TASK FORM */}
             <form
                 onSubmit={handleSubmit(submitForm)}
-                className="flex flex-col justify-center space-y-4 rounded-lg"
+                className="flex flex-col justify-center space-y-2 rounded-lg"
             >
                 {/* Task input */}
                 <Controller
@@ -194,7 +202,7 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
                             minRows={1}
                             maxRows={15}
                             placeholder="Task"
-                            className="text-light bg-medium resize-none"
+                            className="text-light bg-medium resize-none px-4 py-2 border border-light rounded-lg"
                         />
                     )}
                 />
@@ -204,29 +212,35 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
                     name="description"
                     control={control}
                     render={({ field }) => (
-                        <TextareaAutosize
-                            {...field}
+                        <RichTextEditor
+                            field={field}
+                            state={description}
+                            setState={setDescription}
                             minRows={3}
                             maxRows={15}
                             placeholder="Description (optional)"
-                            className="text-light bg-medium resize-none"
+                            textAreaClassNames="rounded-lg px-4 py-2 bg-medium resize-none"
+                            containerClassNames="border border-light rounded-lg"
+                            styleMenuClassNames="bg-gray-700 py-1 text-light"
                         />
                     )}
                 />
 
                 {/* Due date input */}
-                <div className="text-light mb-3">
-                    {/* <label htmlFor="due-date-input" className="flex flex-col text-sm">
+                {type === "myTasks" &&
+                    <div className="text-light mb-3">
+                        {/* <label htmlFor="due-date-input" className="flex flex-col text-sm">
                         Due date (optional)
                     </label> */}
-                    <input
-                        {...register("dueDate")}
-                        type="date"
-                        id="due-date-input"
-                        min={today}
-                        className="bg-medium border border-light px-2 rounded-lg w-full cursor-pointer"
-                    />
-                </div>
+                        <input
+                            {...register("dueDate")}
+                            type="date"
+                            id="due-date-input"
+                            min={today}
+                            className="bg-medium border border-light px-2 rounded-lg w-full cursor-pointer"
+                        />
+                    </div>
+                }
 
                 {/* Buttons */}
                 <div className="grid grid-cols-2 gap-4">

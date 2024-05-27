@@ -19,7 +19,7 @@ const Undo = () => {
     const { tokens } = useTheme();
 
     const handleClick = async () => {
-        if (completedTasks.length) {
+        if (completedTasks.length && tasksByIndex && tasksByDueDate) {
             try {
                 // Update completed tasks list
                 const lastTask = completedTasks[completedTasks.length - 1];
