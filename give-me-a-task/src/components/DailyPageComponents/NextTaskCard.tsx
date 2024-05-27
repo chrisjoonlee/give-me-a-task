@@ -5,6 +5,8 @@ import { RiArrowLeftSFill as LeftArrow } from "react-icons/ri";
 import { RiArrowRightSFill as RightArrow } from "react-icons/ri";
 import { TaskContext } from "../../context/TaskContext";
 import { isList } from "../../functions";
+import { PopupContext } from "../../context/PopupContext";
+import { MdEdit as EditIcon } from "react-icons/md";
 
 type NextTaskCardProps = {
     task: Task
@@ -19,6 +21,7 @@ const NextTaskCard = ({ task }: NextTaskCardProps) => {
         dailyTasks,
         currentDailyTaskIndex, setCurrentDailyTaskIndex
     } = useContext(TaskContext);
+    const { setTaskToEdit, setShowDailyTaskList } = useContext(PopupContext);
 
     const handleClickLeft = () => {
         const newIndex = currentDailyTaskIndex - 1
@@ -32,11 +35,27 @@ const NextTaskCard = ({ task }: NextTaskCardProps) => {
         window.localStorage.setItem("currentDailyTaskIndex", JSON.stringify(newIndex));
     }
 
-    return (
+    const handleClickEdit = () => {
+        setTaskToEdit(task);
+        setShowDailyTaskList(true);
+    }
+
+    if (dailyTasks) return (
         <div
             key={task.id}
-            className="flex flex-col justify-between w-full bg-medium rounded-lg"
+            className="flex flex-col justify-between w-full bg-medium rounded-lg group relative"
         >
+            {/* EDIT BUTTON */}
+            <div>
+                <div
+                    onClick={handleClickEdit}
+                    className="absolute right-2 top-14 hidden transition-colors p-1 rounded-full cursor-pointer text-light
+                    group-hover:block hover:bg-gray-700"
+                >
+                    <EditIcon size={16} />
+                </div>
+            </div>
+
             {/* Header */}
             <div className="flex flex-row items-center justify-between w-full bg-gray-600 py-1 px-3 rounded-t-lg">
                 {/* Left button */}

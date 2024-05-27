@@ -7,6 +7,8 @@ import '../animations.css';
 import DueDateBadge from "./DueDateBadge.tsx";
 import { deleteTask, isList } from "../../functions.ts";
 import FormattedText from "../FormattedText.tsx";
+import { MdEdit as EditIcon } from "react-icons/md";
+import { PopupContext } from "../../context/PopupContext.tsx";
 
 type RandomTaskCardProps = {
     task: Task
@@ -20,6 +22,7 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
         taskCompleted, setTaskCompleted
     } = useContext(TaskContext);
     const { completedTasks, setCompletedTasks } = useContext(CompletedTasksContext);
+    const { setTaskToEdit, setShowTaskList } = useContext(PopupContext);
 
     const handleComplete = async () => {
         if (tasksByIndex && tasksByDueDate) {
@@ -36,6 +39,11 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                     }
                 });
         }
+    }
+
+    const handleClickEdit = () => {
+        setTaskToEdit(task);
+        setShowTaskList(true);
     }
 
     useEffect(() => {
@@ -61,8 +69,18 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
                 // NORMAL TASK CARD
                 <div
                     key={task.id}
-                    className="group w-full pt-3 bg-medium rounded-lg"
+                    className="group relative w-full pt-3 bg-medium rounded-lg"
                 >
+                    {/* EDIT BUTTON */}
+                    <div>
+                        <div
+                            onClick={handleClickEdit}
+                            className="absolute right-2 hidden transition-colors p-1 rounded-full cursor-pointer text-light
+                    group-hover:block hover:bg-gray-700"
+                        >
+                            <EditIcon size={16} />
+                        </div>
+                    </div>
 
                     <div className="px-5 pb-5">
                         {/* Heading */}

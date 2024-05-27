@@ -23,10 +23,21 @@ type TaskListProps = {
     useFilters: boolean;
     tasks: Task[] | null;
     setTasks: Function;
+    showTasks: boolean;
+    setShowTasks: Function;
 }
 
-const TaskList = ({ type, title, iconType, useFilters, tasks, setTasks }: TaskListProps) => {
-    const [showTasks, setShowTasks] = useState(false);
+const TaskList = ({
+    type,
+    title,
+    iconType,
+    useFilters,
+    tasks,
+    setTasks,
+    showTasks,
+    setShowTasks
+}: TaskListProps) => {
+    // const [showTasks, setShowTasks] = useState(false);
     const { taskToEdit } = useContext(PopupContext);
 
     const { tokens } = useTheme();

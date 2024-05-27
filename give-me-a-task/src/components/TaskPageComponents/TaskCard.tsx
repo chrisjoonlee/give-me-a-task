@@ -4,8 +4,9 @@ import { useContext, useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { TaskContext } from "../../context/TaskContext.tsx";
 import DueDateBadge from "./DueDateBadge.tsx";
-import EditButton from "./EditButton.tsx";
 import FormattedText from "../FormattedText.tsx";
+import { MdEdit as EditIcon } from "react-icons/md";
+import { PopupContext } from "../../context/PopupContext.tsx";
 
 type TaskCardProps = {
     index: number;
@@ -16,6 +17,7 @@ type TaskCardProps = {
 const TaskCard = ({ index, task, type = "myTasks" }: TaskCardProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const { sortType } = useContext(TaskContext);
+    const { setTaskToEdit } = useContext(PopupContext);
 
     const handleClick = () => {
         if (task.description) {
@@ -24,8 +26,16 @@ const TaskCard = ({ index, task, type = "myTasks" }: TaskCardProps) => {
     }
 
     const content = <>
-        {/* Edit icon */}
-        <EditButton task={task} />
+        {/* EDIT BUTTON */}
+        <div>
+            <div
+                onClick={() => setTaskToEdit(task)}
+                className="absolute right-2 hidden transition-colors p-1 rounded-full cursor-pointer text-light
+                group-hover:block hover:bg-gray-700"
+            >
+                <EditIcon size={16} />
+            </div>
+        </div>
 
         {/* Heading */}
         <FormattedText

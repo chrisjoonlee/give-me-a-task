@@ -107,8 +107,6 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
                 reset();
                 setTaskToEdit(null);
 
-                if (!task.dueDate) delete task.dueDate;
-
                 console.log("TASK:", task);
 
                 // Update record in DynamoDB

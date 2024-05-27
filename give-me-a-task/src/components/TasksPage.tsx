@@ -8,6 +8,7 @@ import Undo from "./Undo.tsx";
 import { useContext } from "react";
 import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
 import { TaskContext } from "../context/TaskContext.tsx";
+import { PopupContext } from "../context/PopupContext.tsx";
 
 type TasksProps = {
     user?: AuthUser;
@@ -18,6 +19,7 @@ const TasksPage: React.FC<TasksProps> = () => {
     const { tasksByIndex, setTasksByIndex,
         tasksByDueDate, setTasksByDueDate,
         sortType } = useContext(TaskContext);
+    const { showTaskList, setShowTaskList } = useContext(PopupContext);
 
     return (
         <div className="flex flex-col space-y-3 pb-8 pt-2 items-center
@@ -29,6 +31,8 @@ const TasksPage: React.FC<TasksProps> = () => {
                 useFilters={true}
                 tasks={sortType === "dueDate" ? tasksByDueDate : tasksByIndex}
                 setTasks={sortType === "dueDate" ? setTasksByDueDate : setTasksByIndex}
+                showTasks={showTaskList}
+                setShowTasks={setShowTaskList}
             />
 
             <div className="space-y-3">
