@@ -4,26 +4,26 @@ import { Task } from '../types';
 type StateSetter<T> = (value: T | ((prevValue: T) => T)) => void;
 
 export type TaskContextType = {
-    tasksByIndex: Task[];
-    setTasksByIndex: StateSetter<Task[]>;
-    tasksByDueDate: Task[];
-    setTasksByDueDate: StateSetter<Task[]>;
+    tasksByIndex: Task[] | null;
+    setTasksByIndex: StateSetter<Task[] | null>;
+    tasksByDueDate: Task[] | null;
+    setTasksByDueDate: StateSetter<Task[] | null>;
     currentTask: Task | boolean | null;
     setCurrentTask: StateSetter<Task | boolean | null>;
     taskCompleted: boolean;
     setTaskCompleted: StateSetter<boolean>;
     sortType: string;
     setSortType: StateSetter<string>;
-    dailyTasks: Task[];
-    setDailyTasks: StateSetter<Task[]>;
+    dailyTasks: Task[] | null;
+    setDailyTasks: StateSetter<Task[] | null>;
     currentDailyTaskIndex: number;
     setCurrentDailyTaskIndex: StateSetter<number>;
 }
 
 const TaskContext = createContext<TaskContextType>({
-    tasksByIndex: [],
+    tasksByIndex: null,
     setTasksByIndex: () => { },
-    tasksByDueDate: [],
+    tasksByDueDate: null,
     setTasksByDueDate: () => { },
     currentTask: null,
     setCurrentTask: () => { },
@@ -31,7 +31,7 @@ const TaskContext = createContext<TaskContextType>({
     setTaskCompleted: () => { },
     sortType: "",
     setSortType: () => { },
-    dailyTasks: [],
+    dailyTasks: null,
     setDailyTasks: () => { },
     currentDailyTaskIndex: -1,
     setCurrentDailyTaskIndex: () => { }
@@ -42,8 +42,11 @@ type TaskContextProviderProps = {
 }
 
 const TaskProvider = ({ children }: TaskContextProviderProps) => {
-    const [tasksByIndex, setTasksByIndex] = useState<Task[]>([]);
-    const [tasksByDueDate, setTasksByDueDate] = useState<Task[]>([]);
+    const [tasksByIndex, setTasksByIndex] = useState<Task[] | null>(null);
+    // null = Still loading tasks
+    // [] = No tasks yet
+
+    const [tasksByDueDate, setTasksByDueDate] = useState<Task[] | null>(null);
     const [currentTask, setCurrentTask] = useState<Task | boolean | null>(null);
     // null = task not yet requested
     // Task = there is a current task
@@ -51,7 +54,7 @@ const TaskProvider = ({ children }: TaskContextProviderProps) => {
 
     const [taskCompleted, setTaskCompleted] = useState<boolean>(false);
     const [sortType, setSortType] = useState<string>("index");
-    const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
+    const [dailyTasks, setDailyTasks] = useState<Task[] | null>(null);
     const [currentDailyTaskIndex, setCurrentDailyTaskIndex] = useState<number>(-1);
 
     return (

@@ -49,7 +49,7 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
     }
 
     const editTask = async (formData: FormValues) => {
-        if (taskToEdit) {
+        if (taskToEdit && tasksByIndex && tasksByDueDate) {
             try {
                 const task = {
                     ...formData,
@@ -89,7 +89,7 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
     };
 
     const editDailyTask = async (formData: FormValues) => {
-        if (taskToEdit) {
+        if (taskToEdit && dailyTasks) {
             try {
                 const task = {
                     ...formData,
@@ -125,52 +125,8 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
         }
     };
 
-    // const submitForm = async () => {
-    //     if (taskToEdit) {
-    //         try {
-    //             const task = {
-    //                 name: taskToEdit.name,
-    //                 description: taskToEdit.description,
-    //                 dueDate: taskToEdit.dueDate,
-    //                 id: taskToEdit.id,
-    //                 index: taskToEdit.index,
-    //                 userId
-    //             };
-
-    //             // Remove due date if no value present
-    //             if (!task.dueDate) delete task.dueDate;
-
-    //             console.log("TASK:", task);
-
-    //             // reset();
-    //             setTaskToEdit(null);
-
-    //             // Update record in DynamoDB
-    //             const result = await client.graphql({
-    //                 query: updateTask,
-    //                 variables: {
-    //                     input: task
-    //                 }
-    //             }) as GraphQLResult<UpdateTaskData>;
-
-    //             // Update local state
-    //             const updatedTask = result.data.updateTask;
-    //             setTasksByIndex(tasksByIndex.map(task => task.id === updatedTask.id ? updatedTask : task));
-    //             setTasksByDueDate(tasksByDueDate.map(task => task.id === updatedTask.id ? updatedTask : task));
-    //             if (currentTask && currentTask !== true && currentTask.index === taskToEdit.index) {
-    //                 setCurrentTask(updatedTask);
-    //             }
-
-    //             console.log("Task updated successfully:", updatedTask);
-    //         }
-    //         catch (error) {
-    //             console.log('Error updating task:', error);
-    //         }
-    //     }
-    // }
-
     const handleComplete = async () => {
-        if (taskToEdit) {
+        if (taskToEdit && dailyTasks && tasksByIndex && tasksByDueDate) {
             deleteTask(taskToEdit)
                 .then(deletedTask => {
                     if (deletedTask) {
@@ -186,7 +142,7 @@ const EditTaskForm = ({ type }: EditTaskFormProps) => {
     }
 
     const handleDeleteDailyTask = async () => {
-        if (taskToEdit) {
+        if (taskToEdit && dailyTasks) {
             console.log("Task to delete:", taskToEdit);
             deleteDailyTask(taskToEdit)
                 .then(deletedTask => {

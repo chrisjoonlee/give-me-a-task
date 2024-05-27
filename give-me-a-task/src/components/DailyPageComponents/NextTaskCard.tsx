@@ -57,7 +57,7 @@ const NextTaskCard = ({ task }: NextTaskCardProps) => {
                 <div className="font-bold text-light">{currentDailyTaskIndex + 1}</div>
 
                 {/* Right button */}
-                {task.index < dailyTasks.length - 1 ?
+                {dailyTasks && task.index < dailyTasks.length - 1 ?
                     <div
                         onClick={handleClickRight}
                         className={arrowClassNames}>

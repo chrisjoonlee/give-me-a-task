@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { TaskContext } from "../../context/TaskContext";
-import { Button, Text, useTheme } from "@aws-amplify/ui-react";
+import { Button, Loader, Text, useTheme } from "@aws-amplify/ui-react";
 import RandomTaskCard from "./RandomTaskCard";
 
 const RandomTask = () => {
@@ -15,28 +15,32 @@ const RandomTask = () => {
     const { tokens } = useTheme();
 
     const generateRandomTask = () => {
-        setTaskCompleted(false);
+        if (tasksByIndex) {
+            setTaskCompleted(false);
 
-        // Generate a task
-        if (tasksByIndex.length > 0) {
-            console.log("Number of tasks:", tasksByIndex.length);
+            // Generate a task
+            if (tasksByIndex.length > 0) {
+                console.log("Number of tasks:", tasksByIndex.length);
 
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * tasksByIndex.length);
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * tasksByIndex.length);
+                }
+                while (randomIndex === currentIndex);
+                setCurrentIndex(randomIndex);
+
+                console.log("Random index:", randomIndex);
+                setCurrentTask(tasksByIndex[randomIndex]);
             }
-            while (randomIndex === currentIndex);
-            setCurrentIndex(randomIndex);
-
-            console.log("Random index:", randomIndex);
-            setCurrentTask(tasksByIndex[randomIndex]);
+            // There are no tasks to generate
+            else setCurrentTask(false);
         }
-        // There are no tasks to generate
-        else setCurrentTask(false);
     }
 
     const getHighPriorityTask = () => {
-        setCurrentTask(tasksByDueDate[0]);
+        if (tasksByDueDate) {
+            setCurrentTask(tasksByDueDate[0]);
+        }
     }
 
     useEffect(() => {
@@ -73,13 +77,21 @@ const RandomTask = () => {
                 </Button>
             </div>
 
+            {/* Tasks still loading */}
+            {!tasksByIndex || !tasksByDueDate &&
+                <Loader
+                    variation="linear"
+                    ariaLabel="Loading..."
+                />
+            }
+
             {/* Show random task */}
-            {currentTask && currentTask !== true &&
+            {tasksByIndex && tasksByDueDate && currentTask && currentTask !== true &&
                 <RandomTaskCard task={currentTask} />
             }
 
             {/* If there are no tasks */}
-            {currentTask === false &&
+            {tasksByIndex && tasksByDueDate && currentTask === false &&
                 <Text color={tokens.colors.light}>You have no tasks!</Text>
             }
         </div>

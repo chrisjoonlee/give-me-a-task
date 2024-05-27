@@ -22,18 +22,20 @@ const RandomTaskCard = ({ task }: RandomTaskCardProps) => {
     const { completedTasks, setCompletedTasks } = useContext(CompletedTasksContext);
 
     const handleComplete = async () => {
-        deleteTask(task)
-            .then(deletedTask => {
-                if (deletedTask) {
-                    // Update local state
-                    setTasksByIndex(tasksByIndex.filter(task => task.id !== deletedTask.id));
-                    setTasksByDueDate(tasksByDueDate.filter(task => task.id !== deletedTask.id));
-                    setTaskCompleted(true);
+        if (tasksByIndex && tasksByDueDate) {
+            deleteTask(task)
+                .then(deletedTask => {
+                    if (deletedTask) {
+                        // Update local state
+                        setTasksByIndex(tasksByIndex.filter(task => task.id !== deletedTask.id));
+                        setTasksByDueDate(tasksByDueDate.filter(task => task.id !== deletedTask.id));
+                        setTaskCompleted(true);
 
-                    // Add to completed tasks list
-                    setCompletedTasks([...completedTasks, deletedTask]);
-                }
-            });
+                        // Add to completed tasks list
+                        setCompletedTasks([...completedTasks, deletedTask]);
+                    }
+                });
+        }
     }
 
     useEffect(() => {

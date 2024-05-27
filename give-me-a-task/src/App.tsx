@@ -82,7 +82,7 @@ const App: React.FC<AppProps> = ({ signOut }) => {
 
   useEffect(() => {
     // Get current daily task index
-    if (dailyTasks.length) {
+    if (dailyTasks && dailyTasks.length) {
       const currentIndex = window.localStorage.getItem("currentDailyTaskIndex");
       if (currentIndex) setCurrentDailyTaskIndex(JSON.parse(currentIndex));
       else setCurrentDailyTaskIndex(-1);

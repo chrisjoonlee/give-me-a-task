@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { TaskContext } from "../../context/TaskContext";
-import { Button, Text, useTheme } from "@aws-amplify/ui-react";
+import { Button, Loader, Text, useTheme } from "@aws-amplify/ui-react";
 import NextTaskCard from "./NextTaskCard";
 
 const NextTask = () => {
@@ -14,7 +14,7 @@ const NextTask = () => {
     const { tokens } = useTheme();
 
     const handleStartDay = () => {
-        if (dailyTasks.length) setCurrentDailyTaskIndex(0);
+        if (dailyTasks && dailyTasks.length) setCurrentDailyTaskIndex(0);
         window.localStorage.setItem("currentDailyTaskIndex", "0");
     }
 
@@ -34,16 +34,33 @@ const NextTask = () => {
                 color={tokens.colors.light}
                 borderRadius="8px"
             >
-                {currentDailyTaskIndex >= 0 ? 'Restart' : 'Start my day'}
+                {!dailyTasks ?
+                    <Loader
+                        size="large"
+                        aria-label="Loading..."
+                    />
+                    :
+                    currentDailyTaskIndex >= 0 ?
+                        'Restart'
+                        :
+                        'Start my day'}
             </Button>
 
+            {/* Tasks still loading */}
+            {/* {!dailyTasks &&
+                <Loader
+                    variation="linear"
+                    aria-label="Loading..."
+                />
+            } */}
+
             {/* Show random task */}
-            {currentDailyTaskIndex >= 0 &&
+            {dailyTasks && currentDailyTaskIndex >= 0 &&
                 <NextTaskCard task={dailyTasks[currentDailyTaskIndex]} />
             }
 
             {/* If there are no tasks */}
-            {currentDailyTaskIndex < 0 &&
+            {dailyTasks && currentDailyTaskIndex < 0 &&
                 <Text color={tokens.colors.light}>
                     You have no tasks!
                 </Text>

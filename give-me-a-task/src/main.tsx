@@ -19,6 +19,11 @@ import { Theme, ThemeProvider } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { CompletedTasksProvider } from './context/CompletedTasksContext.tsx';
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const queryClient = new QueryClient();
+
 const theme: Theme = {
   name: 'my-theme',
   tokens: {
@@ -60,18 +65,21 @@ const theme: Theme = {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    <UserProvider>
-      <TaskProvider>
-        <PopupProvider>
-          <CompletedTasksProvider>
-            <ThemeProvider theme={theme}>
-              <React.StrictMode>
-                <App />
-              </React.StrictMode>
-            </ThemeProvider>
-          </CompletedTasksProvider>
-        </PopupProvider>
-      </TaskProvider>
-    </UserProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <TaskProvider>
+          <PopupProvider>
+            <CompletedTasksProvider>
+              <ThemeProvider theme={theme}>
+                <React.StrictMode>
+                  <App />
+                  <ReactQueryDevtools initialIsOpen={false} />
+                </React.StrictMode>
+              </ThemeProvider>
+            </CompletedTasksProvider>
+          </PopupProvider>
+        </TaskProvider>
+      </UserProvider>
+    </QueryClientProvider>
   </BrowserRouter>
 )

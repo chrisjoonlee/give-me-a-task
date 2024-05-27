@@ -235,73 +235,77 @@ const AddTaskForm = ({ type }: AddTaskFormProps) => {
     }
 
     const createTaskRecord = async (formData: FormValues) => {
-        try {
-            const task = {
-                name: formData.name,
-                dueDate: formData.dueDate,
-                description,
-                userId,
-                index: tasksByIndex.length > 0 ? tasksByIndex[tasksByIndex.length - 1].index + 1 : 0
-            };
+        if (tasksByIndex && tasksByDueDate) {
+            try {
+                const task = {
+                    name: formData.name,
+                    dueDate: formData.dueDate,
+                    description,
+                    userId,
+                    index: tasksByIndex.length > 0 ? tasksByIndex[tasksByIndex.length - 1].index + 1 : 0
+                };
 
-            // Remove due date if no value present
-            if (!task.dueDate) delete task.dueDate;
+                // Remove due date if no value present
+                if (!task.dueDate) delete task.dueDate;
 
-            reset();
-            setDescription("");
+                reset();
+                setDescription("");
 
-            console.log("Task to add:", task);
+                console.log("Task to add:", task);
 
-            // Create record in DynamoDB
-            const result = await client.graphql({
-                query: createTask,
-                variables: {
-                    input: task,
-                },
-            }) as GraphQLResult<CreateTaskData>;
+                // Create record in DynamoDB
+                const result = await client.graphql({
+                    query: createTask,
+                    variables: {
+                        input: task,
+                    },
+                }) as GraphQLResult<CreateTaskData>;
 
-            // Update local state
-            const addedTask = result.data.createTask;
-            setTasksByIndex([...tasksByIndex, addedTask]);
-            setTasksByDueDate([...tasksByDueDate, addedTask]);
+                // Update local state
+                const addedTask = result.data.createTask;
+                setTasksByIndex([...tasksByIndex, addedTask]);
+                setTasksByDueDate([...tasksByDueDate, addedTask]);
 
-            console.log("Task added successfully:", addedTask);
-        }
-        catch (error) {
-            console.log('Error creating task:', error);
+                console.log("Task added successfully:", addedTask);
+            }
+            catch (error) {
+                console.log('Error creating task:', error);
+            }
         }
     }
 
     const createDailyTaskRecord = async (formData: FormValues) => {
-        try {
-            const task = {
-                name: formData.name,
-                description,
-                userId,
-                index: dailyTasks.length > 0 ? dailyTasks[dailyTasks.length - 1].index + 1 : 0
+        if (dailyTasks) {
+            try {
+                const task = {
+                    name: formData.name,
+                    description,
+                    userId,
+                    index: dailyTasks.length > 0 ? dailyTasks[dailyTasks.length - 1].index + 1 : 0
+                }
+
+                reset();
+                setDescription("");
+
+                console.log("Daily task to add:", task);
+
+                // Create record in DynamoDB
+                const result = await client.graphql({
+                    query: createDailyTask,
+                    variables: {
+                        input: task,
+                    },
+                }) as GraphQLResult<CreateDailyTaskData>;
+
+                // Update local state
+                const addedTask = result.data.createDailyTask;
+                setDailyTasks([...dailyTasks, addedTask]);
+
+                console.log("Daily task added successfully:", addedTask);
             }
-
-            reset();
-            setDescription("");
-
-            console.log("Daily task to add:", task);
-
-            // Create record in DynamoDB
-            const result = await client.graphql({
-                query: createDailyTask,
-                variables: {
-                    input: task,
-                },
-            }) as GraphQLResult<CreateDailyTaskData>;
-
-            // Update local state
-            const addedTask = result.data.createDailyTask;
-            setDailyTasks([...dailyTasks, addedTask]);
-
-            console.log("Daily task added successfully:", addedTask);
-        }
-        catch (error) {
-            console.log('Error creating daily task:', error);
+            catch (error) {
+                console.log('Error creating daily task:', error);
+            }
         }
     }
 

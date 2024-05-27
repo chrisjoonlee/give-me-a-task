@@ -36,7 +36,7 @@ export const fetchTasks = async (userId: string, sortType: string): Promise<Task
         }) as GraphQLResult<SearchTasksData>;
 
         const tasks = taskData.data.searchTasks.items;
-        console.log("Task list:", tasks);
+        console.log("searchTasks result:", tasks);
         return tasks;
     } catch (error) {
         console.log('Error fetching tasks:', error);
