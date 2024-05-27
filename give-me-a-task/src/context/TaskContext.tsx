@@ -50,7 +50,7 @@ const TaskProvider = ({ children }: TaskContextProviderProps) => {
     // false = task requested but there are no tasks
 
     const [taskCompleted, setTaskCompleted] = useState<boolean>(false);
-    const [sortType, setSortType] = useState<string>("");
+    const [sortType, setSortType] = useState<string>("index");
     const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
     const [currentDailyTaskIndex, setCurrentDailyTaskIndex] = useState<number>(-1);
 

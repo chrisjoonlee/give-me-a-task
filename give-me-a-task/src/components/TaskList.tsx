@@ -1,10 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Task, UpdateDailyTaskData, UpdateTaskData } from "../types.ts";
 
-import { updateDailyTask, updateTask } from '../graphql/mutations.ts';
 import { GraphQLResult, generateClient } from "aws-amplify/api";
-
-import { TaskContext } from "../context/TaskContext.tsx";
 
 import { Heading, Text, useTheme } from '@aws-amplify/ui-react';
 import TaskCard from "./TaskPageComponents/TaskCard.tsx";
@@ -15,16 +12,20 @@ import EditTaskForm from "./EditTaskForm.tsx";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
 import TaskFilter from "./TaskPageComponents/TaskFilter.tsx";
 import { IoSunny as SunIcon } from "react-icons/io5";
+import { updateDailyTask, updateTask } from "../graphql/mutations.ts";
 
 const client = generateClient();
 
 type TaskListProps = {
     type: string;
+    title: string;
+    iconType: string;
+    useFilters: boolean;
+    tasks: Task[];
+    setTasks: Function;
 }
 
-const TaskList = ({ type }: TaskListProps) => {
-    const { tasksByIndex, tasksByDueDate, dailyTasks, sortType } = useContext(TaskContext);
-    const [tasks, setTasks] = useState<Task[]>([]);
+const TaskList = ({ type, title, iconType, useFilters, tasks, setTasks }: TaskListProps) => {
     const [showTasks, setShowTasks] = useState(false);
     const { taskToEdit } = useContext(PopupContext);
 
@@ -88,38 +89,20 @@ const TaskList = ({ type }: TaskListProps) => {
         const newTasks = [...tasks];
         const movedTasks = newTasks.splice(source.index, 1);
         newTasks.splice(destination.index, 0, ...movedTasks);
-        setTasks(newTasks);
+        const newlyIndexedTasks = newTasks.map((task, index) => {
+            if (task.index === index) return task;
+            else {
+                return { ...task, index };
+            }
+        })
+        console.log("Newly index tasks:", newlyIndexedTasks);
+        setTasks(newlyIndexedTasks);
 
         // Update records in DynamoDB
         newTasks.forEach((task, index) => {
             if (task.index !== index) updateTaskIndex(task, index);
         })
     }
-
-    // Populate tasks (local state)
-    useEffect(() => {
-        if (type === "myTasks") {
-            console.log("Sort type:", sortType);
-
-            if (tasksByIndex && tasksByDueDate) {
-                console.log("Goal");
-
-                if (sortType === "dueDate") {
-                    setTasks(tasksByDueDate);
-                }
-                else {
-                    setTasks(tasksByIndex);
-                }
-            }
-        }
-    }, [tasksByIndex, tasksByDueDate, sortType]);
-
-    // Populate daily tasks (local state)
-    useEffect(() => {
-        if (type === "daily" && dailyTasks) {
-            setTasks(dailyTasks);
-        }
-    }, [dailyTasks]);
 
     useEffect(() => {
         console.log("Task to edit:", taskToEdit);
@@ -130,8 +113,7 @@ const TaskList = ({ type }: TaskListProps) => {
 
             {/* Heading */}
             <Heading level={5} color={tokens.colors.light}>
-                {type === "myTasks" && "My Tasks"}
-                {type === "daily" && "Daily"}
+                {title}
             </Heading>
 
             {/* Icon */}
@@ -141,18 +123,18 @@ const TaskList = ({ type }: TaskListProps) => {
                     hover:-rotate-6 hover:text-white"
             >
                 {/* Envelope icon */}
-                {type === "myTasks" && (showTasks ?
+                {iconType === "envelope" && (showTasks ?
                     <OpenEnvelopeIcon size={30} />
                     :
                     <ClosedEnvelopeIcon size={30} />
                 )}
 
                 {/* Sun icon */}
-                {type === "daily" && <SunIcon size={30} />}
+                {iconType === "sun" && <SunIcon size={30} />}
             </div>
 
             {/* Task filter */}
-            {type === "myTasks" && showTasks && <TaskFilter />}
+            {useFilters && showTasks && <TaskFilter />}
 
             {/* If there are no tasks: Message */}
             {showTasks && tasks.length <= 0 &&
