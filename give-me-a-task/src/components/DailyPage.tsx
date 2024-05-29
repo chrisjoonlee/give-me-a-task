@@ -4,6 +4,7 @@ import NextTask from "./DailyPageComponents/NextTask";
 import TaskList from "./TaskList";
 import { TaskContext } from "../context/TaskContext";
 import { PopupContext } from "../context/PopupContext";
+import Timer from "./Timer";
 
 const DailyPage = () => {
     const { dailyTasks, setDailyTasks } = useContext(TaskContext);
@@ -29,6 +30,7 @@ const DailyPage = () => {
                 {/* {completedTasks.length > 0 &&
                         <Undo />
                     } */}
+                <Timer />
             </div>
         </div>
     );

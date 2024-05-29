@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Task, UpdateDailyTaskData, UpdateTaskData } from "../types.ts";
 
 import { GraphQLResult, generateClient } from "aws-amplify/api";
 
 import { Heading, Loader, Text, useTheme } from '@aws-amplify/ui-react';
-import TaskCard from "./TaskPageComponents/TaskCard.tsx";
+import TaskCard from "./TaskCard.tsx";
 import { FaEnvelope as ClosedEnvelopeIcon } from "react-icons/fa";
 import { FaEnvelopeOpen as OpenEnvelopeIcon } from "react-icons/fa";
 import { PopupContext } from "../context/PopupContext.tsx";

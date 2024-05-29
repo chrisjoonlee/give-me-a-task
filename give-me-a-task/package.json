@@ -30,7 +30,9 @@
     "react-linkify": "^1.0.0-alpha",
     "react-router-dom": "^6.23.1",
     "react-textarea-autosize": "^8.5.3",
-    "sort-by": "^0.0.2"
+    "react-timer-hook": "^3.0.7",
+    "sort-by": "^0.0.2",
+    "use-sound": "^4.0.1"
   },
   "devDependencies": {
     "@types/graphql": "^14.5.0",

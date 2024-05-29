@@ -1,12 +1,12 @@
-import { Task } from "../../types.ts";
+import { Task } from "../types.ts";
 import { HiOutlineMenuAlt2 as ExpandIcon } from "react-icons/hi";
 import { useContext, useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { TaskContext } from "../../context/TaskContext.tsx";
-import DueDateBadge from "./DueDateBadge.tsx";
-import FormattedText from "../FormattedText.tsx";
+import { TaskContext } from "../context/TaskContext.tsx";
+import DueDateBadge from "./TaskPageComponents/DueDateBadge.tsx";
+import FormattedText from "./FormattedText.tsx";
 import { MdEdit as EditIcon } from "react-icons/md";
-import { PopupContext } from "../../context/PopupContext.tsx";
+import { PopupContext } from "../context/PopupContext.tsx";
 
 type TaskCardProps = {
     index: number;
@@ -65,7 +65,10 @@ const TaskCard = ({ index, task, type = "myTasks" }: TaskCardProps) => {
 
                 {/* DUe date icon */}
                 {task.dueDate &&
-                    <DueDateBadge date={task.dueDate} />
+                    <DueDateBadge
+                        date={task.dueDate}
+                        classNames="mb-1"
+                    />
                 }
             </div>
         }
@@ -80,7 +83,7 @@ const TaskCard = ({ index, task, type = "myTasks" }: TaskCardProps) => {
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                     key={task.id}
-                    className={`group bg-medium pl-4 pr-2 py-2 rounded-lg relative
+                    className={`group bg-medium px-4 py-2 rounded-lg relative
                         ${task.description && 'cursor-pointer'}`}
                     onClick={handleClick}
                 >
@@ -94,7 +97,7 @@ const TaskCard = ({ index, task, type = "myTasks" }: TaskCardProps) => {
     else return (
         <div
             key={task.id}
-            className={`group bg-medium pl-4 pr-2 py-2 rounded-lg relative
+            className={`group bg-medium px-4 py-2 rounded-lg relative
                         ${task.description && 'cursor-pointer'}`}
             onClick={handleClick}
         >

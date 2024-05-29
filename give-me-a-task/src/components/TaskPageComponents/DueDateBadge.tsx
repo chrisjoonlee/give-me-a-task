@@ -1,10 +1,11 @@
 import { distanceFromNow, formatDate } from "../../functions";
 
 type DueDateBadgeProps = {
-    date: string
+    date: string;
+    classNames?: string;
 }
 
-const DueDateBadge = ({ date }: DueDateBadgeProps) => {
+const DueDateBadge = ({ date, classNames = "" }: DueDateBadgeProps) => {
     let bgColor;
     let textColor;
     const numDaysFromNow = distanceFromNow(date);
@@ -37,7 +38,7 @@ const DueDateBadge = ({ date }: DueDateBadgeProps) => {
     return (
         <div
             style={style}
-            className="text-light text-xs px-2 rounded-lg font-semibold transition-colors">
+            className={`text-light text-xs px-2 rounded-lg font-semibold transition-colors ${classNames}`}>
             Due {formatDate(date)}
         </div>
     );

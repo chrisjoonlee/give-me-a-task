@@ -9,6 +9,7 @@ import { useContext } from "react";
 import { CompletedTasksContext } from "../context/CompletedTasksContext.tsx";
 import { TaskContext } from "../context/TaskContext.tsx";
 import { PopupContext } from "../context/PopupContext.tsx";
+import Timer from "./Timer.tsx";
 
 type TasksProps = {
     user?: AuthUser;
@@ -38,6 +39,7 @@ const TasksPage: React.FC<TasksProps> = () => {
             <div className="space-y-3">
                 <RandomTask />
                 <AddTaskForm type="myTasks" />
+                <Timer />
                 {completedTasks.length > 0 &&
                     <Undo />
                 }

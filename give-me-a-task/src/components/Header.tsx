@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import { TaskContext } from '../context/TaskContext';
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import Timer from "./Timer";
 
 type HeaderProps = {
     signOut?: UseAuthenticator["signOut"]; //() => void;
@@ -26,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ signOut }) => {
     return (
         <div>
             {/* Header */}
-            <div className="fixed top-0 w-screen flex items-center justify-between sm:justify-center bg-dark h-[72px] p-1 z-50">
+            <div className="fixed top-0 w-screen flex items-center justify-between sm:justify-center bg-dark h-[72px] py-1 px-4 z-50">
                 {/* For formatting */}
                 <div></div>
 
