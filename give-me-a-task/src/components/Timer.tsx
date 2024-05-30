@@ -9,7 +9,7 @@ import { PopupContext } from '../context/PopupContext';
 import TimerEditForm from './TimerEditForm';
 
 const Timer = () => {
-    const [timerLength, setTimerLength] = useState<number>(5); // In seconds
+    const [timerLength, setTimerLength] = useState<number>(1800); // In seconds
 
     const time = new Date();
     time.setSeconds(time.getSeconds() + timerLength);
