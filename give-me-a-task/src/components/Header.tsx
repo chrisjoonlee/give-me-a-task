@@ -4,7 +4,6 @@ import { Outlet } from "react-router-dom";
 import { TaskContext } from '../context/TaskContext';
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import Timer from "./Timer";
 
 type HeaderProps = {
     signOut?: UseAuthenticator["signOut"]; //() => void;
